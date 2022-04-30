@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="files">
+      <UniqueIdentifier>{8c89d7b8-095d-4502-8427-72c5e0d13b37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\stl">
+      <UniqueIdentifier>{062b6f02-06e2-4a40-a666-50a9263b2678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature">
+      <UniqueIdentifier>{10c4d43f-a5de-4305-bc29-71eea501834e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\communication">
+      <UniqueIdentifier>{03b5eaa8-b399-41d7-93c0-66188c9027fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\callback">
+      <UniqueIdentifier>{fc74c0f5-c3be-4541-b6d6-098948f712ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util">
+      <UniqueIdentifier>{2560c0e2-daf0-4c6c-8711-515359ea3e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\process">
+      <UniqueIdentifier>{722b03d1-078c-4380-878a-927ab5d4bad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\memory">
+      <UniqueIdentifier>{35858373-3879-42e8-80ad-6b46b1e1caa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\protection">
+      <UniqueIdentifier>{8016eb9b-3b55-4c26-bd34-9824428bb3d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\thread">
+      <UniqueIdentifier>{77c3a989-86f4-4efa-9c34-c5ff0d427978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\callback\object">
+      <UniqueIdentifier>{fdc29311-e0b1-4599-ab89-256f047f9ebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\callback\process">
+      <UniqueIdentifier>{9ee2695b-9efc-4776-a7e5-2ca5e1cb06fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\handle">
+      <UniqueIdentifier>{b38b7d7d-643a-45e7-9425-6e08f239db5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\compatibility">
+      <UniqueIdentifier>{7e1f8d9e-3560-4e5e-8a18-67e133bfef1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\lib">
+      <UniqueIdentifier>{c8c24acf-150e-4ab4-b6c9-0f12d961b6ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\lib\infinity_hook">
+      <UniqueIdentifier>{91504bfd-82a8-46e7-a6a3-13efa7d5091f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\hook">
+      <UniqueIdentifier>{6af0dbae-a2f7-4e7a-b09e-02a771ae17bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\callback\filter">
+      <UniqueIdentifier>{38b4736d-a485-43b1-b89d-61d904963b36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\compatibility\native">
+      <UniqueIdentifier>{df701493-461d-4970-9772-6302ef47edb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\compatibility\native\native_struct">
+      <UniqueIdentifier>{134e57e3-c509-4f28-b608-7ab9084a2de9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\module">
+      <UniqueIdentifier>{ab4b6b84-e658-4763-930b-bb6c210e65ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\file">
+      <UniqueIdentifier>{59f51180-fcf2-4be8-baa2-85ffab691c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\module\map">
+      <UniqueIdentifier>{1a7c6e85-f1fe-4c1f-a8bb-94a50adcd3b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\native">
+      <UniqueIdentifier>{62e281c2-7719-4da8-bc66-d4dcb1e2283f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\hook\infinity_hook">
+      <UniqueIdentifier>{c7e7575f-5af9-455a-b59c-a5e49e928f80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\hook\inline_hook">
+      <UniqueIdentifier>{49f4220a-5459-49d5-a61d-738547818ff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\ssdt">
+      <UniqueIdentifier>{9348be8e-f9d4-42e3-aa2d-5c0e284bc312}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\callback\image">
+      <UniqueIdentifier>{96118188-0dfd-4076-aebb-d39f46d011ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\system">
+      <UniqueIdentifier>{115da9c2-f861-4885-a4aa-a618ffee309f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\assembly">
+      <UniqueIdentifier>{e2b19b34-ec43-4dd0-89d2-6de2e5ce57b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\concurrent">
+      <UniqueIdentifier>{4e38806d-a86d-4ea4-9768-205014e5e90c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\cheat">
+      <UniqueIdentifier>{1d76cb7e-b43c-4612-ba5f-630bb94cd114}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\cheat\easy_anti_cheat">
+      <UniqueIdentifier>{d8eef534-18fe-413e-830c-59e1a35d1538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\patch_guard">
+      <UniqueIdentifier>{26226fb6-a42f-41a3-af15-ad6b76c76598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\hook\inline_hook\lde">
+      <UniqueIdentifier>{d24e7330-ca8e-4ad1-bbab-469b59e33079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\virtualization">
+      <UniqueIdentifier>{89fd8153-383d-41a2-bab1-36c7b04ba3b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\extern">
+      <UniqueIdentifier>{ca740335-0a47-4a4a-9722-e3424ccb44f4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="communication.cpp">
+      <Filter>files\feature\communication</Filter>
+    </ClCompile>
+    <ClCompile Include="procedure.cpp">
+      <Filter>files\util\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="process.cpp">
+      <Filter>files\util\process</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.cpp">
+      <Filter>files\util\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="process_protection.cpp">
+      <Filter>files\feature\protection</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="thread.cpp">
+      <Filter>files\util\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="object_callback.cpp">
+      <Filter>files\feature\callback\object</Filter>
+    </ClCompile>
+    <ClCompile Include="process_callback.cpp">
+      <Filter>files\feature\callback\process</Filter>
+    </ClCompile>
+    <ClCompile Include="handle.cpp">
+      <Filter>files\util\handle</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="compatibility.cpp">
+      <Filter>files\util\compatibility</Filter>
+    </ClCompile>
+    <ClCompile Include="hde64.cpp">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClCompile>
+    <ClCompile Include="hook.cpp">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClCompile>
+    <ClCompile Include="filter.cpp">
+      <Filter>files\feature\callback\filter</Filter>
+    </ClCompile>
+    <ClCompile Include="module.cpp">
+      <Filter>files\util\module</Filter>
+    </ClCompile>
+    <ClCompile Include="file.cpp">
+      <Filter>files\util\file</Filter>
+    </ClCompile>
+    <ClCompile Include="module_map.cpp">
+      <Filter>files\util\module\map</Filter>
+    </ClCompile>
+    <ClCompile Include="native.cpp">
+      <Filter>files\util\native</Filter>
+    </ClCompile>
+    <ClCompile Include="extern.cpp">
+      <Filter>files\util\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="patch_guard.cpp">
+      <Filter>files\util\patch_guard</Filter>
+    </ClCompile>
+    <ClCompile Include="infinity_hook.cpp">
+      <Filter>files\feature\hook\infinity_hook</Filter>
+    </ClCompile>
+    <ClCompile Include="inline_hook.cpp">
+      <Filter>files\feature\hook\inline_hook</Filter>
+    </ClCompile>
+    <ClCompile Include="ssdt.cpp">
+      <Filter>files\util\ssdt</Filter>
+    </ClCompile>
+    <ClCompile Include="image_callback.cpp">
+      <Filter>files\feature\callback\image</Filter>
+    </ClCompile>
+    <ClCompile Include="system.cpp">
+      <Filter>files\util\system</Filter>
+    </ClCompile>
+    <ClCompile Include="assembly.cpp">
+      <Filter>files\util\assembly</Filter>
+    </ClCompile>
+    <ClCompile Include="concurrent.cpp">
+      <Filter>files\util\concurrent</Filter>
+    </ClCompile>
+    <ClCompile Include="easy_anti_cheat.cpp">
+      <Filter>files\feature\cheat\easy_anti_cheat</Filter>
+    </ClCompile>
+    <ClCompile Include="lde.cpp">
+      <Filter>files\feature\hook\inline_hook\lde</Filter>
+    </ClCompile>
+    <ClCompile Include="virtualization.cpp">
+      <Filter>files\util\virtualization</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.hpp">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel_stl.hpp">
+      <Filter>files\stl</Filter>
+    </ClInclude>
+    <ClInclude Include="communication.hpp">
+      <Filter>files\feature\communication</Filter>
+    </ClInclude>
+    <ClInclude Include="process.hpp">
+      <Filter>files\util\process</Filter>
+    </ClInclude>
+    <ClInclude Include="procedure.hpp">
+      <Filter>files\util\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="memory.hpp">
+      <Filter>files\util\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="process_protection.hpp">
+      <Filter>files\feature\protection</Filter>
+    </ClInclude>
+    <ClInclude Include="util.hpp">
+      <Filter>files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="thread.hpp">
+      <Filter>files\util\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="object_callback.hpp">
+      <Filter>files\feature\callback\object</Filter>
+    </ClInclude>
+    <ClInclude Include="process_callback.hpp">
+      <Filter>files\feature\callback\process</Filter>
+    </ClInclude>
+    <ClInclude Include="handle.hpp">
+      <Filter>files\util\handle</Filter>
+    </ClInclude>
+    <ClInclude Include="compatibility.hpp">
+      <Filter>files\util\compatibility</Filter>
+    </ClInclude>
+    <ClInclude Include="hde64.h">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="headers.hpp">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="imports.hpp">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="pstdint.h">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="table64.h">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.hpp">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook.hpp">
+      <Filter>files\lib\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="extern.hpp">
+      <Filter>files\util\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="filter.hpp">
+      <Filter>files\feature\callback\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="pestructs.hpp">
+      <Filter>files\util\compatibility\native</Filter>
+    </ClInclude>
+    <ClInclude Include="native_enum.hpp">
+      <Filter>files\util\compatibility\native</Filter>
+    </ClInclude>
+    <ClInclude Include="native_struct.hpp">
+      <Filter>files\util\compatibility\native</Filter>
+    </ClInclude>
+    <ClInclude Include="native_struct10.hpp">
+      <Filter>files\util\compatibility\native\native_struct</Filter>
+    </ClInclude>
+    <ClInclude Include="native_struct81.hpp">
+      <Filter>files\util\compatibility\native\native_struct</Filter>
+    </ClInclude>
+    <ClInclude Include="native_sturct8.hpp">
+      <Filter>files\util\compatibility\native\native_struct</Filter>
+    </ClInclude>
+    <ClInclude Include="native_struct7.hpp">
+      <Filter>files\util\compatibility\native\native_struct</Filter>
+    </ClInclude>
+    <ClInclude Include="file.hpp">
+      <Filter>files\util\file</Filter>
+    </ClInclude>
+    <ClInclude Include="module_map.hpp">
+      <Filter>files\util\module\map</Filter>
+    </ClInclude>
+    <ClInclude Include="native.hpp">
+      <Filter>files\util\native</Filter>
+    </ClInclude>
+    <ClInclude Include="patch_guard.hpp">
+      <Filter>files\util\patch_guard</Filter>
+    </ClInclude>
+    <ClInclude Include="infinity_hook.hpp">
+      <Filter>files\feature\hook\infinity_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="inline_hook.hpp">
+      <Filter>files\feature\hook\inline_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="ssdt.hpp">
+      <Filter>files\util\ssdt</Filter>
+    </ClInclude>
+    <ClInclude Include="image_callback.hpp">
+      <Filter>files\feature\callback\image</Filter>
+    </ClInclude>
+    <ClInclude Include="system.hpp">
+      <Filter>files\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="assembly.hpp">
+      <Filter>files\util\assembly</Filter>
+    </ClInclude>
+    <ClInclude Include="concurrent.hpp">
+      <Filter>files\util\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="easy_anti_cheat.hpp">
+      <Filter>files\feature\cheat\easy_anti_cheat</Filter>
+    </ClInclude>
+    <ClInclude Include="lde.hpp">
+      <Filter>files\feature\hook\inline_hook\lde</Filter>
+    </ClInclude>
+    <ClInclude Include="virtualization.hpp">
+      <Filter>files\util\virtualization</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="module.hpp">
+      <Filter>files\util\module</Filter>
+    </None>
+  </ItemGroup>
+</Project>

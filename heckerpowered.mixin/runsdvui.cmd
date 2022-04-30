@@ -1,0 +1,2 @@
+cd /d "E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin" &&msbuild "heckerpowered.mixin.vcxproj" /t:sdv /p:inputs="/check /devenv" /p:configuration="Release" /p:platform="x64" /p:SolutionDir="E:\Repos\VS\heckerpowered.mixin" 
+exit 0 
