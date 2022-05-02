@@ -35,8 +35,7 @@ namespace com {
 		constexpr auto function_escape_debugger = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 4, METHOD_BUFFERED, FILE_ANY_ACCESS);
 		constexpr auto function_set_system_thread = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 5, METHOD_BUFFERED, FILE_ANY_ACCESS);
 		constexpr auto function_elevate_handle_access = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 6, METHOD_BUFFERED, FILE_ANY_ACCESS);
-		constexpr auto function_create_thread = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 7, METHOD_BUFFERED, FILE_ANY_ACCESS);
-		constexpr auto function_exit_windows = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 8, METHOD_BUFFERED, FILE_ANY_ACCESS);
+		constexpr auto function_exit_windows = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 7, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
 		__try {
 			request_handlers = new std::unordered_map<unsigned int, request_handler>();
@@ -78,8 +77,15 @@ namespace com {
 						case requests::memory_operation::secure_virtual:
 						{
 							auto result = mem::secure_virtual_memory(process_id, base_address, size, memory_request.probe_mode, memory_request.flags);
+							if (result == nullptr)
+							{
+								status = STATUS_UNSUCCESSFUL;
+								break;
+							}
+
 							request.response<HANDLE>(result);
-							status = (result == 0 ? STATUS_UNSUCCESSFUL : STATUS_SUCCESS);
+							status = STATUS_SUCCESS;
+							break;
 						}
 						case requests::memory_operation::unsecure_virtual:
 							mem::unsecure_virtual_memory(process_id, base_address);
@@ -99,8 +105,8 @@ namespace com {
 					return status;
 			});
 			
-			register_request_handler<void*>(function_protect, [](request<void*> request) {
-				protect::begin_protect(request.value());
+			register_request_handler<requests::process_guard>(function_protect, [](request<requests::process_guard> request) {
+				guard::raise_guard_level(request.value().process_id, request.value().level);
 				return STATUS_SUCCESS;
 			});
 
@@ -168,21 +174,6 @@ namespace com {
 				if (!NT_SUCCESS(status)) { return status; }
 
 				return handle::grant_access(process, elevate.access, elevate.handle);
-			});
-
-			register_request_handler<requests::create_thread>(function_create_thread, [](request<requests::create_thread> request) {
-				auto&& create_thread{ request.value() };
-
-				HANDLE process;
-				auto status{ process::open_process_by_id(create_thread.process_id, process) };
-				if (NT_SUCCESS(status)) { return status; }
-
-				HANDLE thread{};
-				OBJECT_ATTRIBUTES attribute{};
-				InitializeObjectAttributes(&attribute, nullptr, OBJ_KERNEL_HANDLE, nullptr, nullptr);
-
-				return ZwCreateThreadEx(&thread, THREAD_ALL_ACCESS, &attribute, process, create_thread.start_address, create_thread.parameter, 0, 0,
-					create_thread.stack_size, create_thread.stack_size, nullptr);
 			});
 
 			register_request_handler<void>(function_exit_windows, [](request<void> request [[maybe_unused]]) {

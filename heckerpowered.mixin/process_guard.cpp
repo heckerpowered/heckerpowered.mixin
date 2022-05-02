@@ -1,6 +1,6 @@
-#include "process_protection.hpp"
+#include "process_guard.hpp"
 
-namespace protect
+namespace guard
 {
 
 	// For containers that do not require a constructor, we can
@@ -10,22 +10,38 @@ namespace protect
 	// problems. For containers that require constructors, we need to
 	// use pointers when declaring global variables and static local
 	// variables.
-	std::unordered_set<void*>* protected_process;
+	std::unordered_map<HANDLE, guard_level>* guarded_processes;
 
-	void begin_protect(void* process_id) noexcept
+	void raise_guard_level(HANDLE process_id, guard_level level) noexcept
 	{
-		protected_process->emplace(process_id);
-		process::set_protect_flag_by_id(process_id, process::protect_flag::enable, process::protect_flag::enable, process::protect_flag::enable);
+		(*guarded_processes)[process_id] = level;
+		if (level >= guard_level::strict)
+		{
+			process::set_protect_flag_by_id(process_id, process::protect_flag::enable, process::protect_flag::enable, process::protect_flag::enable);
+		}
+		else
+		{
+			process::set_protect_flag_by_id(process_id, process::protect_flag::disable, process::protect_flag::disable, 
+				process::protect_flag::disable);
+		}
 	}
 
-	void end_protect(void* process_id) noexcept
+	void disable_guard(void* process_id) noexcept
 	{
-		protected_process->erase(process_id);
+		guarded_processes->erase(process_id);
+		process::set_protect_flag_by_id(process_id, process::protect_flag::disable, process::protect_flag::disable, process::protect_flag::disable);
 	}
 
-	bool is_protected(void* process_id) noexcept
+	bool guarded(void* process_id) noexcept
 	{
-		return protected_process->contains(process_id);
+		return require(process_id, guard_level::basic);
+	}
+
+	bool require(HANDLE process_id, guard_level level) noexcept
+	{
+		auto result{ guarded_processes->find(process_id) };
+		if (result == guarded_processes->end()) { return false; }
+		return result->second >= level;
 	}
 
 	void initialize()
@@ -35,39 +51,25 @@ namespace protect
 		// time, static objects are constructed at load time, both add
 		// elements to the global destructor pointer container at 
 		// construction time and destruct at unload time
-		protected_process = new std::unordered_set<void*>();
+		guarded_processes = new std::unordered_map<HANDLE, guard_level>;
+
+		callback::image::register_callbacks([](PUNICODE_STRING FullImageName [[maybe_unused]], HANDLE ProcessId, PIMAGE_INFO ImageInfo)
+		{
+			if (require(ProcessId, guard_level::strict))
+			{
+				ImageInfo->ImageBase = nullptr;
+				ImageInfo->ImageSize = 0;
+			};
+		});
 
 		#pragma region INFINITY HOOK
 		hook::hook_export(L"NtOpenProcess", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
 			[](_Out_ PHANDLE ProcessHandle, _In_ ACCESS_MASK DesiredAccess, _In_ POBJECT_ATTRIBUTES ObjectAttributes, _In_opt_ PCLIENT_ID ClientId)
 		{
-			if (ClientId && is_protected(ClientId->UniqueProcess)) return STATUS_ACCESS_DENIED;
+			if (ClientId && guarded(ClientId->UniqueProcess)) return STATUS_ACCESS_DENIED;
 
 			return NtOpenProcess(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
 		}));
-
-		#ifdef BUG_FIX_NT_TERMINATE_PROCESS // Unknow software exception 0x80000003
-		hook::hook_ssdt("NtTerminateProcess", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
-		{
-			if (ProcessHandle)
-			{
-				PEPROCESS process{};
-				if (NT_SUCCESS(ObReferenceObjectByHandle(ProcessHandle, PROCESS_ALL_ACCESS, *PsProcessType, MODE::KernelMode, reinterpret_cast<void**>(&process)
-					, nullptr)))
-				{
-					auto process_id = PsGetProcessId(process);
-					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
-				}
-			}
-
-			static NTSTATUS(*NtTerminateProcess)(HANDLE, NTSTATUS)
-			{
-				static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>(ext::get_ssdt_entry(ssdt::get_ssdt_index("NtTerminateProcess")))
-			};
-			return NtTerminateProcess(ProcessHandle, ExitStatus);
-		}));
-		#endif
 
 		hook::hook_ssdt("NtTerminateThread", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ThreadHandle, NTSTATUS ExitStatus)
 		{
@@ -77,7 +79,7 @@ namespace protect
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (guarded(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -88,10 +90,7 @@ namespace protect
 		hook::hook_export(L"NtOpenThread", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
 			[](_Out_ PHANDLE ThreadHandle, _In_ ACCESS_MASK DesiredAccess, _In_ POBJECT_ATTRIBUTES ObjectAttributes, _In_ PCLIENT_ID ClientId)
 		{
-			if (is_protected(ClientId->UniqueProcess))
-			{
-				return STATUS_ACCESS_DENIED;
-			}
+			if (guarded(ClientId->UniqueProcess)){ return STATUS_ACCESS_DENIED; }
 
 			return NtOpenThread(ThreadHandle, DesiredAccess, ObjectAttributes, ClientId);
 		}));
@@ -128,7 +127,7 @@ namespace protect
 					current = next;
 					next = reinterpret_cast<PSYSTEM_PROCESS_INFORMATION>(reinterpret_cast<unsigned char*>(current) + current->NextEntryOffset);
 
-					if (protect::is_protected(next->ProcessId))
+					if (guard::guarded(next->ProcessId))
 					{
 						if (!next->NextEntryOffset) { current->NextEntryOffset = 0; }
 						else { current->NextEntryOffset += next->NextEntryOffset; }
@@ -141,6 +140,28 @@ namespace protect
 			return status;
 		}));
 
+		#ifdef BUG_FIX_NT_TERMINATE_PROCESS // Unknow software exception 0x80000003
+		hook::hook_ssdt("NtTerminateProcess", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
+		{
+			if (ProcessHandle)
+			{
+				PEPROCESS process{};
+				if (NT_SUCCESS(ObReferenceObjectByHandle(ProcessHandle, PROCESS_ALL_ACCESS, *PsProcessType, MODE::KernelMode, reinterpret_cast<void**>(&process)
+					, nullptr)))
+				{
+					auto process_id = PsGetProcessId(process);
+					ObDereferenceObject(process);
+					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+				}
+			}
+
+			static NTSTATUS(*NtTerminateProcess)(HANDLE, NTSTATUS)
+			{
+				static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>(ext::get_ssdt_entry(ssdt::get_ssdt_index("NtTerminateProcess")))
+			};
+			return NtTerminateProcess(ProcessHandle, ExitStatus);
+		}));
+		#endif
 
 		#ifdef HOOK_DEBUG_API
 		hook::hook_ssdt("NtDebugActiveProcess", static_cast<NTSTATUS(*)(HANDLE, HANDLE)>([](HANDLE ProcessHandle, HANDLE DebugObjectHandle)

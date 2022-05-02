@@ -148,22 +148,4 @@ namespace handle {
 
 		return close_handle(process, handle);
 	}
-
-	PHANDLE_TABLE get_psp_cid_table() noexcept
-	{
-		PHANDLE_TABLE psp_cid_table{};
-		if (psp_cid_table) { return psp_cid_table; }
-
-		auto address{ reinterpret_cast<unsigned char*>(PsLookupProcessByProcessId) };
-		for (;;address++)
-		{
-			if (*reinterpret_cast<unsigned short*>(address) == 0x3D8B && *(address + 6) == 0xE8)
-			{
-				psp_cid_table = reinterpret_cast<PHANDLE_TABLE>(address + 2);
-				break;
-			}
-		}
-
-		return psp_cid_table;
-	}
 }

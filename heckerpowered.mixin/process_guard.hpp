@@ -7,6 +7,7 @@
 #include "process.hpp"
 #include "inline_hook.hpp"
 #include "ssdt.hpp"
+#include "image_callback.hpp"
 
 extern "C" NTSYSAPI NTSTATUS NtOpenThread(
 	_Out_ PHANDLE            ThreadHandle,
@@ -22,9 +23,18 @@ extern "C" NTSYSAPI NTSTATUS ZwOpenThread(
 	_In_  PCLIENT_ID         ClientId
 );
 
-namespace protect {
-	void begin_protect(void* process_id) noexcept;
-	void end_protect(void* process_id) noexcept;
-	bool is_protected(void* process_id) noexcept;
+namespace guard {
+	enum class guard_level
+	{
+		disabled,
+		basic,
+		strict,
+		highest,
+	};
+
+	void raise_guard_level(HANDLE process_id, guard_level level) noexcept;
+	void disable_guard(void* process_id) noexcept;
+	bool guarded(void* process_id) noexcept;
+	bool require(HANDLE process_id, guard_level level) noexcept;
 	void initialize();
 }

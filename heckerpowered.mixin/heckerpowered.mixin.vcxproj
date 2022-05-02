@@ -256,10 +256,11 @@
     <ClCompile Include="procedure.cpp" />
     <ClCompile Include="process.cpp" />
     <ClCompile Include="process_callback.cpp" />
-    <ClCompile Include="process_protection.cpp" />
+    <ClCompile Include="process_guard.cpp" />
     <ClCompile Include="ssdt.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="thread.cpp" />
+    <ClCompile Include="thread_callback.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="virtualization.cpp" />
   </ItemGroup>
@@ -298,12 +299,13 @@
     <ClInclude Include="procedure.hpp" />
     <ClInclude Include="process.hpp" />
     <ClInclude Include="process_callback.hpp" />
-    <ClInclude Include="process_protection.hpp" />
+    <ClInclude Include="process_guard.hpp" />
     <ClInclude Include="pstdint.h" />
     <ClInclude Include="ssdt.hpp" />
     <ClInclude Include="system.hpp" />
     <ClInclude Include="table64.h" />
     <ClInclude Include="thread.hpp" />
+    <ClInclude Include="thread_callback.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="virtualization.hpp" />

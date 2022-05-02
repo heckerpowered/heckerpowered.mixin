@@ -25,9 +25,6 @@
     <Filter Include="files\util\memory">
       <UniqueIdentifier>{35858373-3879-42e8-80ad-6b46b1e1caa0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\feature\protection">
-      <UniqueIdentifier>{8016eb9b-3b55-4c26-bd34-9824428bb3d8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\thread">
       <UniqueIdentifier>{77c3a989-86f4-4efa-9c34-c5ff0d427978}</UniqueIdentifier>
     </Filter>
@@ -112,6 +109,12 @@
     <Filter Include="files\util\extern">
       <UniqueIdentifier>{ca740335-0a47-4a4a-9722-e3424ccb44f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="files\feature\guard">
+      <UniqueIdentifier>{8016eb9b-3b55-4c26-bd34-9824428bb3d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\callback\thread">
+      <UniqueIdentifier>{6aa3de3b-ad86-472f-be36-f917cb742b98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="communication.cpp">
@@ -126,8 +129,8 @@
     <ClCompile Include="memory.cpp">
       <Filter>files\util\memory</Filter>
     </ClCompile>
-    <ClCompile Include="process_protection.cpp">
-      <Filter>files\feature\protection</Filter>
+    <ClCompile Include="process_guard.cpp">
+      <Filter>files\feature\guard</Filter>
     </ClCompile>
     <ClCompile Include="util.cpp">
       <Filter>files\util</Filter>
@@ -207,6 +210,9 @@
     <ClCompile Include="virtualization.cpp">
       <Filter>files\util\virtualization</Filter>
     </ClCompile>
+    <ClCompile Include="thread_callback.cpp">
+      <Filter>files\feature\callback\thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.hpp">
@@ -227,8 +233,8 @@
     <ClInclude Include="memory.hpp">
       <Filter>files\util\memory</Filter>
     </ClInclude>
-    <ClInclude Include="process_protection.hpp">
-      <Filter>files\feature\protection</Filter>
+    <ClInclude Include="process_guard.hpp">
+      <Filter>files\feature\guard</Filter>
     </ClInclude>
     <ClInclude Include="util.hpp">
       <Filter>files\util</Filter>
@@ -337,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="virtualization.hpp">
       <Filter>files\util\virtualization</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_callback.hpp">
+      <Filter>files\feature\callback\thread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@
 #include <functional>
 #include <unordered_map>
 #include "process.hpp"
-#include "process_protection.hpp"
+#include "process_guard.hpp"
 #include "memory.hpp"
 #include "util.hpp"
 #include "thread.hpp"
@@ -19,25 +19,25 @@ namespace com {
 
 	extern std::unordered_map<unsigned int, request_handler>* request_handlers;
 
-	constexpr unsigned short extract_method(unsigned long io_ctl) {
+	constexpr inline unsigned short extract_method(unsigned long io_ctl) {
 		return io_ctl & 0B11;
 	}
 
 	template<typename T>
 	class request final {
 	public:
-		request(T* value, void* buffer) noexcept : _value(value), _buffer(buffer) {}
+		inline request(T* value, void* buffer) noexcept : _value(value), _buffer(buffer) {}
 
 		template<typename data_type>
-		void response(data_type value) const noexcept {
+		inline void response(data_type value) const noexcept {
 			*reinterpret_cast<data_type*>(_buffer) = value;
 		}
 
-		void response(size_t size, void* pointer) const noexcept {
+		inline void response(size_t size, void* pointer) const noexcept {
 			memcpy(_buffer, pointer, size);
 		}
 
-		T& value() const noexcept { return *_value; }
+		inline T& value() const noexcept { return *_value; }
 	private:
 		T* _value;
 		void* _buffer;
@@ -46,10 +46,10 @@ namespace com {
 	template<>
 	class request<void> final {
 	public:
-		request(void* buffer) noexcept : _buffer(buffer) {}
+		inline request(void* buffer) noexcept : _buffer(buffer) {}
 
 		template<typename data_type>
-		void response(data_type value) const noexcept {
+		inline void response(data_type value) const noexcept {
 			*reinterpret_cast<data_type*>(_buffer) = value;
 		}
 	private:
@@ -138,11 +138,10 @@ namespace com {
 			HANDLE handle;
 		};
 
-		struct create_thread {
+		struct process_guard
+		{
+			guard::guard_level level;
 			HANDLE process_id;
-			size_t stack_size;
-			void* start_address;
-			void* parameter;
 		};
 	}
 }

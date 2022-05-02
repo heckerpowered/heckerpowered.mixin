@@ -1,6 +1,6 @@
 #pragma once
 #include <ntifs.h>
-#include "process_protection.hpp"
+#include "process_guard.hpp"
 #include "process.hpp"
 #include <set>
 #include <string>

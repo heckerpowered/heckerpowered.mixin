@@ -56,7 +56,7 @@ namespace callback {
 	NTSTATUS initialize_callbacks() noexcept
 	{
 		NTSTATUS status = register_callback(PsProcessType, [](auto registration_context [[maybe_unused]], auto operation_information) {
-			if (protect::is_protected(PsGetProcessId(static_cast<PEPROCESS>(operation_information->Object)))) { 
+			if (guard::guarded(PsGetProcessId(static_cast<PEPROCESS>(operation_information->Object)))) { 
 				zero_handle_access(operation_information);
 			}
 
@@ -65,40 +65,13 @@ namespace callback {
 		if (!NT_SUCCESS(status)) { return status; }
 
 		status = register_callback(PsThreadType, [](auto registration_content [[maybe_unused]], auto operation_information) {
-			if(protect::is_protected(PsGetProcessId(thread::thread_to_process(static_cast<PETHREAD>(operation_information->Object))))){
+			if(guard::guarded(PsGetProcessId(thread::thread_to_process(static_cast<PETHREAD>(operation_information->Object))))){
 				zero_handle_access(operation_information);
 			}
 			
 			return OB_PREOP_CALLBACK_STATUS::OB_PREOP_SUCCESS;
 		});
 		if (!NT_SUCCESS(status)) { return status; }
-
-		#ifdef FEATURE_FILE_CALLBACK
-		enable_callback(*IoFileObjectType);
-		status = register_callback(IoFileObjectType, [](void* registration_context [[maybe_unused]], POB_PRE_OPERATION_INFORMATION operation_information) {
-			__try {
-				if (operation_information->ObjectType != *IoFileObjectType) // I don't know why it works
-					return OB_PREOP_CALLBACK_STATUS::OB_PREOP_SUCCESS;
-		
-				PFILE_OBJECT file = static_cast<PFILE_OBJECT>(operation_information->Object);
-				
-				constexpr auto file_name = L"ultimate";
-				if (std::wstring(file->FileName.Buffer).find(file_name) != std::wstring::npos && !protect::is_protected(PsGetCurrentProcessId())) {
-					DbgPrint("%ls\n", file->FileName.Buffer);
-					zero_handle_access(operation_information);
-				}
-			}
-			__except (EXCEPTION_EXECUTE_HANDLER) {
-		
-			}
-		
-			return OB_PREOP_CALLBACK_STATUS::OB_PREOP_SUCCESS;
-		});
-		
-		if (!NT_SUCCESS(status)) {
-			return status;
-		}
-		#endif
 
 		return status;
 	}

@@ -147,18 +147,23 @@ namespace mem {
 	HANDLE secure_virtual_memory(void* process_id, void* address, size_t size, unsigned int probe_mode, unsigned int flags) noexcept {
 		PEPROCESS process;
 		const auto status = PsLookupProcessByProcessId(process_id, &process);
-		if (!NT_SUCCESS(status)) return nullptr;
+		if (!NT_SUCCESS(status)) { return nullptr; }
 
 		const bool should_attach = mem::should_attach(process_id);
-
-		KAPC_STATE state;
-		if (should_attach) KeStackAttachProcess(process, &state);
 		
-		auto result = MmSecureVirtualMemoryEx(address, size, probe_mode, flags);
-		if (should_attach) KeUnstackDetachProcess(&state);
-
-		return result;
-
+		KAPC_STATE state;
+		if (should_attach) { KeStackAttachProcess(process, &state); }
+		
+		__try
+		{
+			return MmSecureVirtualMemoryEx(address, size, probe_mode, flags);
+		}
+		__finally
+		{
+			if (should_attach) { KeUnstackDetachProcess(&state); }
+			ObDereferenceObject(process);
+			return nullptr;
+		}
 	}
 
 	void unsecure_virtual_memory(void* process_id, void* address) noexcept {
