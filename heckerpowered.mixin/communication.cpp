@@ -36,7 +36,7 @@ namespace com {
 		constexpr auto function_set_system_thread = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 5, METHOD_BUFFERED, FILE_ANY_ACCESS);
 		constexpr auto function_elevate_handle_access = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 6, METHOD_BUFFERED, FILE_ANY_ACCESS);
 		constexpr auto function_exit_windows = CTL_CODE(FILE_DEVICE_UNKNOWN, function_offset + 7, METHOD_BUFFERED, FILE_ANY_ACCESS);
-
+		
 		__try {
 			request_handlers = new std::unordered_map<unsigned int, request_handler>();
 			

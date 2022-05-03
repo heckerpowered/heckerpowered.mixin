@@ -107,7 +107,7 @@ namespace module{
 			} STRIBG_BUF, * PSTRIBG_BUF;
 
 			UNICODE_STRING ntdll = RTL_CONSTANT_STRING(L"ntdll.dll");
-			bool wow64(PsGetProcessWow64Process(context->pProcess));
+			const bool wow64(PsGetProcessWow64Process(context->pProcess));
 			auto string_buffer{ reinterpret_cast<PSTRIBG_BUF>(context->userMem->buffer) };
 			auto ntdll_base{ module::get_user_module(context->pProcess, ntdll, wow64) };
 			auto query_name{ module::get_module_export(ntdll_base, "RtlDosApplyFileIsolationRedirection_Ustr", context->pProcess, UNICODE_STRING()) };
@@ -143,7 +143,7 @@ namespace module{
 			__try
 			{
 				// RtlDosApplyFileIsolationRedirection_Ustr
-				NTSTATUS status{ call_routine(false, context, query_name,
+				const NTSTATUS status{ call_routine(false, context, query_name,
 					static_cast<unsigned __int64>(true),
 					reinterpret_cast<unsigned __int64>(&string_buffer->origName),
 					reinterpret_cast<unsigned __int64>(nullptr),

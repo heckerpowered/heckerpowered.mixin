@@ -53,15 +53,6 @@ namespace guard
 		// construction time and destruct at unload time
 		guarded_processes = new std::unordered_map<HANDLE, guard_level>;
 
-		callback::image::register_callbacks([](PUNICODE_STRING FullImageName [[maybe_unused]], HANDLE ProcessId, PIMAGE_INFO ImageInfo)
-		{
-			if (require(ProcessId, guard_level::strict))
-			{
-				ImageInfo->ImageBase = nullptr;
-				ImageInfo->ImageSize = 0;
-			};
-		});
-
 		#pragma region INFINITY HOOK
 		hook::hook_export(L"NtOpenProcess", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
 			[](_Out_ PHANDLE ProcessHandle, _In_ ACCESS_MASK DesiredAccess, _In_ POBJECT_ATTRIBUTES ObjectAttributes, _In_opt_ PCLIENT_ID ClientId)
@@ -140,7 +131,6 @@ namespace guard
 			return status;
 		}));
 
-		#ifdef BUG_FIX_NT_TERMINATE_PROCESS // Unknow software exception 0x80000003
 		hook::hook_ssdt("NtTerminateProcess", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
 		{
 			if (ProcessHandle)
@@ -151,7 +141,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::strict)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -159,11 +149,10 @@ namespace guard
 			{
 				static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>(ext::get_ssdt_entry(ssdt::get_ssdt_index("NtTerminateProcess")))
 			};
+
 			return NtTerminateProcess(ProcessHandle, ExitStatus);
 		}));
-		#endif
 
-		#ifdef HOOK_DEBUG_API
 		hook::hook_ssdt("NtDebugActiveProcess", static_cast<NTSTATUS(*)(HANDLE, HANDLE)>([](HANDLE ProcessHandle, HANDLE DebugObjectHandle)
 		{
 			if (ProcessHandle)
@@ -174,7 +163,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -185,14 +174,12 @@ namespace guard
 		hook::hook_ssdt("NtDebugContinue", static_cast<NTSTATUS(*)(HANDLE, PCLIENT_ID, NTSTATUS)>([](HANDLE DebugHandle, PCLIENT_ID AppClientId,
 			NTSTATUS ContinueStatus)
 		{
-			if (is_protected(AppClientId->UniqueProcess)) return STATUS_ACCESS_DENIED;
+			if (require(AppClientId->UniqueProcess, guard_level::highest)) return STATUS_ACCESS_DENIED;
 
 			static auto NtDebugContinue{ static_cast<NTSTATUS(*)(HANDLE, PCLIENT_ID, NTSTATUS)>(ext::get_ssdt_entry(ssdt::get_ssdt_index("NtDebugContinue"))) };
 			return NtDebugContinue(DebugHandle, AppClientId, ContinueStatus);
 		}));
-		#endif
 
-		#ifdef HOOK_THREAD_API
 		hook::hook_ssdt("NtCreateThread", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, HANDLE, PCLIENT_ID, PCONTEXT, void*, BOOLEAN)>(
 			[](PHANDLE ThreadHandle, ACCESS_MASK DesiredAccess, POBJECT_ATTRIBUTES ObjectAttributes,
 				HANDLE ProcessHandle, PCLIENT_ID ClientId, PCONTEXT ThreadContext, void* InitialTeb, BOOLEAN CreateSuspended)
@@ -206,7 +193,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -223,7 +210,7 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::basic)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -240,7 +227,7 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -248,9 +235,7 @@ namespace guard
 				ext::get_ssdt_entry(ssdt::get_ssdt_index("NtQueueApcThread"))) };
 			return NtQueueApcThread(ThreadHandle, ApcRoutine, ApcContext, Argument1, Argument2);
 		}));
-		#endif
 
-		#ifdef NT_ALLOCATE_VIRTUAL_MEMORY_BUG_FIX // Known bug: causes process crashes when protecting processes
 		hook::hook_ssdt("NtAllocateVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, ULONG, PULONG, ULONG, ULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, ULONG ZeroBits, PULONG AllocationSize, ULONG AllocationType, ULONG Protect)
 		{
@@ -262,7 +247,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -270,32 +255,7 @@ namespace guard
 				ext::get_ssdt_entry(ssdt::get_ssdt_index("NtAllocateVirtualMemory"))) };
 			return NtAllocateVirtualMemory(ProcessHandle, BaseAddress, ZeroBits, AllocationSize, AllocationType, Protect);
 		}));
-		#endif
 
-		#ifdef NT_QUERY_VIRTUAL_MEMORY_BUG_FIX // Known bug: Any process started will cause WerFault.exe to start in an infinite loop
-		hook::hook_ssdt("NtQueryVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID, MEMORY_INFORMATION_CLASS, PVOID, ULONG, PULONG)>(
-			[](HANDLE ProcessHandle, PVOID BaseAddress, MEMORY_INFORMATION_CLASS MemoryInformationClass, PVOID MemoryInformation, ULONG MemoryInformationLength,
-				PULONG ReturnLength)
-		{
-			if (ProcessHandle)
-			{
-				PEPROCESS process{};
-				if (NT_SUCCESS(ObReferenceObjectByHandle(ProcessHandle, PROCESS_ALL_ACCESS, *PsProcessType, MODE::KernelMode, reinterpret_cast<void**>(&process)
-					, nullptr)))
-				{
-					auto process_id = PsGetProcessId(process);
-					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
-				}
-			}
-
-			static auto NtQueryVirtualMemory{ static_cast<NTSTATUS(*)(HANDLE, PVOID, MEMORY_INFORMATION_CLASS, PVOID, ULONG, PULONG)> (
-				ext::get_ssdt_entry(ssdt::get_ssdt_index("NtQueryVirtualMemory"))) };
-			return NtQueryVirtualMemory(ProcessHandle, BaseAddress, MemoryInformationClass, MemoryInformation, MemoryInformationLength, ReturnLength);
-		}));
-		#endif
-
-		#ifdef BUG_FIX_NT_DUPLICATE_OBJECT // Known bug: causes process crashes when protecting processes
 		hook::hook_ssdt("NtDuplicateObject", static_cast<NTSTATUS(*)(HANDLE, HANDLE, HANDLE, PHANDLE, ACCESS_MASK, ULONG, ULONG)>(
 			[](HANDLE SourceProcessHandle, HANDLE SourceHandle, HANDLE TargetProcessHandle, PHANDLE TargetHandle, ACCESS_MASK DesiredAccess,
 				ULONG Attributes, ULONG Options)
@@ -308,7 +268,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -317,9 +277,7 @@ namespace guard
 
 			return NtDuplicateObject(SourceProcessHandle, SourceHandle, TargetProcessHandle, TargetHandle, DesiredAccess, Attributes, Options);
 		}));
-		#endif // 
 
-		#ifdef HOOK_INFO_API
 		hook::hook_ssdt("NtGetContextThread", static_cast<NTSTATUS(*)(HANDLE, PCONTEXT)>([](HANDLE ThreadHandle, PCONTEXT Context)
 		{
 			if (ThreadHandle)
@@ -328,7 +286,7 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -344,7 +302,7 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -363,7 +321,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -383,7 +341,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -401,7 +359,7 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -419,7 +377,7 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (is_protected(PsGetProcessId(IoThreadToProcess(thread)))) return STATUS_ACCESS_DENIED;
+					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -427,9 +385,7 @@ namespace guard
 				ext::get_ssdt_entry(ssdt::get_ssdt_index("NtQueryInformationThread"))) };
 			return NtQueryInformationThread(ThreadHandle, ThreadInformationClass, ThreadInformation, ThreadInformationLength, ReturnLength);
 		}));
-		#endif
 
-		#ifdef HOOK_MEMORY_API
 		hook::hook_ssdt("NtFreeVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, PULONG FreeSize, ULONG FreeType)
 		{
@@ -441,7 +397,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -461,7 +417,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -481,7 +437,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -501,7 +457,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -521,7 +477,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -541,7 +497,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -561,7 +517,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (is_protected(process_id)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -569,7 +525,7 @@ namespace guard
 				ext::get_ssdt_entry(ssdt::get_ssdt_index("NtFlushVirtualMemory"))) };
 			return NtFlushVirtualMemory(ProcessHandle, BaseAddress, FlushSize, IoStatusBlock);
 		}));
-		#endif
+
 		#pragma endregion
 
 		// Inline hook disabled.

@@ -97,7 +97,7 @@ namespace module::map{
     template<typename...Args> NTSTATUS call_routine(bool new_thread, PMMAP_CONTEXT context, void* routine, Args&& ... args) noexcept {
         std::vector<unsigned __int64> _args{args...};
 
-        bool wow64(PsGetProcessWow64Process(context->pProcess));
+        const bool wow64(PsGetProcessWow64Process(context->pProcess));
         auto offset{ native::prologue(wow64, context->userMem->code) };
         offset += native::call(wow64, context->userMem->code + offset, routine, _args);
         offset += native::sync(wow64, context->userMem->code + offset, context->userMem->status, context->pSetEvent, context->pSync);

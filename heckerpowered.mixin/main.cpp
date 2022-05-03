@@ -97,7 +97,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 		// When all drivers have completed a given IRP, the I/O manager returns status to the original requester of the
 		// operation. Note that a higher-level driver that sets up a driver-created IRP must supply an IoCompletion routine to
 		// release the IRP it created.
-		// 
+		//
 		// Never call IoCompleteRequest while holding a spin lock. Attempting to complete an IRP while holding a spin lock
 		// can cause deadlocks.
 		IoCompleteRequest(irp, IO_NO_INCREMENT);
@@ -117,7 +117,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// On receipt of a device I/O control request, a device driver examines the I/O control code to determine how to
 	// satisfy the request. For most public I/O control codes, device drivers transfer a small amount of data to or from
 	// the buffer at Irp->AssociatedIrp.SystemBuffer.
-	// 
+	//
 	// A driver's DispatchDeviceControl routine should be named XxxDispatchDeviceControl,
 	// where Xxx is a driver-specific prefix. The driver's DriverEntry routine must store the
 	// DispatchDeviceControl routine's address in DriverObject-
@@ -149,11 +149,11 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 			// For this transfer type, IRPs supply a pointer to a buffer at Irp->AssociatedIrp.SystemBuffer. This buffer represents
 			// both the input buffer and the output buffer that are specified in calls to DeviceIoControl and
 			// IoBuildDeviceIoControlRequest. The driver transfers data out of, and then into, this buffer.
-			// 
+			//
 			// For input data, the buffer size is specified by Parameters.DeviceIoControl.InputBufferLength in the driver's
 			// IO_STACK_LOCATION structure. For output data, the buffer size is specified by
 			// Parameters.DeviceIoControl.OutputBufferLength in the driver's IO_STACK_LOCATION structure.
-			// 
+			//
 			// The size of the space that the system allocates for the single input/output buffer is the larger of the two length
 			// values.
 			auto system_buffer = irp->AssociatedIrp.SystemBuffer;
@@ -165,11 +165,11 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 			// For these transfer types, IRPs supply a pointer to a buffer at Irp->AssociatedIrp.SystemBuffer. This represents the
 			// first buffer that is specified in calls to DeviceIoControl and IoBuildDeviceIoControlRequest. The buffer size is
 			// specified by Parameters.DeviceIoControl.InputBufferLength in the driver's IO_STACK_LOCATION structure.
-			// 
+			//
 			// For these transfer types, IRPs also supply a pointer to an MDL at Irp->MdlAddress. This represents the second
 			// buffer that is specified in calls to DeviceIoControl and IoBuildDeviceIoControlRequest. This buffer can be used as
 			// either an input buffer or an output buffer, as follows:
-			// 
+			//
 			// - METHOD_IN_DIRECT is specified if the driver that handles the IRP receives data in the buffer when it is called.
 			// The MDL describes an input buffer, and specifying METHOD_IN_DIRECT ensures that the executing thread
 			// has read-access to the buffer.
@@ -177,11 +177,11 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 			// - METHOD_OUT_DIRECT is specified if the driver that handles the IRP will write data into the buffer before
 			// completing the IRP. The MDL describes an output buffer, and specifying METHOD_OUT_DIRECT ensures that
 			// the executing thread has write-access to the buffer.
-			// 
+			//
 			// For both of these transfer types, Parameters.DeviceIoControl.OutputBufferLength specifies the size of the buffer
 			// that is described by the MDL.
 			auto input_buffer = irp->AssociatedIrp.SystemBuffer;
-			auto out_buffer = irp->MdlAddress ? MmGetSystemAddressForMdlSafe(irp->MdlAddress, MM_PAGE_PRIORITY::NormalPagePriority 
+			auto out_buffer = irp->MdlAddress ? MmGetSystemAddressForMdlSafe(irp->MdlAddress, MM_PAGE_PRIORITY::NormalPagePriority
 				| MdlMappingNoExecute) : nullptr;
 			irp->IoStatus.Status = com::handle_request(code, length, input_buffer, out_buffer);
 		}
@@ -191,10 +191,10 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 			// The I/O manager does not provide any system buffers or MDLs. The IRP supplies the user-mode virtual addresses
 			// of the input and output buffers that were specified to DeviceIoControl or IoBuildDeviceIoControlRequest,
 			// without validating or mapping them.
-			// 
+			//
 			// The input buffer's address is supplied by Parameters.DeviceIoControl.Type3InputBuffer in the driver's
 			// IO_STACK_LOCATION structure, and the output buffer's address is specified by Irp->UserBuffer.
-			// 
+			//
 			// Buffer sizes are supplied by Parameters.DeviceIoControl.InputBufferLength and
 			// Parameters.DeviceIoControl.OutputBufferLength in the driver's IO_STACK_LOCATION structure.
 			auto input_buffer = stack_location->Parameters.DeviceIoControl.Type3InputBuffer;
@@ -215,7 +215,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 		// When all drivers have completed a given IRP, the I/O manager returns status to the original requester of the
 		// operation. Note that a higher-level driver that sets up a driver-created IRP must supply an IoCompletion routine to
 		// release the IRP it created.
-		// 
+		//
 		// Never call IoCompleteRequest while holding a spin lock. Attempting to complete an IRP while holding a spin lock
 		// can cause deadlocks.
 		IoCompleteRequest(irp, IO_NO_INCREMENT);
@@ -250,10 +250,10 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// Specifies the type of buffering that is used by the I/O manager for I/O requests that are sent to the device stack.
 	// Higher-level drivers OR this member with the same value as the next-lower driver in the stack, except possibly for
 	// highest-level drivers.
-	// 
+	//
 	// DO_BUS_ENUMERATED_DEVICE
 	// The operating system sets this flag in each physical device object (PDO). Drivers must not modify this flag.
-	// 
+	//
 	// DO_DEVICE_INITIALIZING
 	// The I/O manager sets this flag when it creates the device object. A device function driver or filter driver clears the
 	// flag in its AddDevice routine, after it does the following:
@@ -261,7 +261,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// - Establishes the device power state.
 	// - Performs a bitwise OR operation on the member with one of the power flags (if it is necessary).
 	// The Plug and Play (PnP) manager checks that the flag is clear after the AddDevice routine returns.
-	// 
+	//
 	// DO_EXCLUSIVE
 	// Indicates that the driver services an exclusive device, such as a video, serial, parallel, or sound device. WDM drivers
 	// must not set this flag. For more information, see the Specifying Exclusive Access to Device Objects topic.
@@ -278,7 +278,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// the paging path, and do not require inrush current must set this flag. The system calls such drivers at IRQL =
 	// PASSIVE_LEVEL. Drivers cannot set both this flag and DO_POWER_INRUSH. All drivers for WDM, Microsoft
 	// Windows 98, and Windows Millennium Edition must set DO_POWER_PAGABLE.
-	// 
+	//
 	// DO_SHUTDOWN_REGISTERED
 	// Used by the I/O manager to indicate that a driver has registered the device object for shutdown notifications. This
 	// flag should not be used by drivers.
