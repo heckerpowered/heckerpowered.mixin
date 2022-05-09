@@ -192,13 +192,13 @@ namespace process
 
 	NTSTATUS lookup_process_thread(PEPROCESS process, std::vector<PETHREAD>& threads)
 	{
-		auto buffer{ mem::allocate(1024 * 1024) };
+		auto buffer{ memory::allocate(1024 * 1024) };
 		if (buffer == nullptr) return STATUS_INSUFFICIENT_RESOURCES;
 
 		NTSTATUS status{ ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS::SystemProcessInformation, buffer, 1024 * 1024, nullptr) };
 		if (!NT_SUCCESS(status))
 		{
-			mem::free(buffer);
+			memory::free(buffer);
 			return status;
 		}
 
@@ -224,7 +224,7 @@ namespace process
 
 		if (!NT_SUCCESS(status))
 		{
-			mem::free(buffer);
+			memory::free(buffer);
 			return status;
 		}
 

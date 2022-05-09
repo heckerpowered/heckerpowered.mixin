@@ -811,7 +811,7 @@ namespace lde
 
 	void initialize() noexcept
 	{
-		_lde = reinterpret_cast<lde_disasm>(mem::allocate(sizeof(lde_shell_code)));
+		_lde = reinterpret_cast<lde_disasm>(memory::allocate(sizeof(lde_shell_code)));
 		memcpy(_lde, lde_shell_code, sizeof(lde_shell_code));
 	}
 

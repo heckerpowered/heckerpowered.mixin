@@ -6,7 +6,7 @@
 #include "memory.hpp"
 #include "lde.hpp"
 
-namespace inline_hook {
+namespace hook::inline_hook {
 	void initialize() noexcept;
 	void uninstall_hooks() noexcept;
 	void hook(void* victim, void* target) noexcept;

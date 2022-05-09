@@ -50,33 +50,33 @@ namespace com {
 
 				KIRQL irql{};
 				if (disable_protection) {
-					irql = mem::disable_write_protect();
+					irql = memory::disable_write_protect();
 				}
 
 				NTSTATUS status{};
 					switch (memory_request.operation) {
 						case requests::memory_operation::read_virtual:
-							status = mem::read_virtual_memory(process_id, base_address, size, buffer);
+							status = memory::read_virtual_memory(process_id, base_address, size, buffer);
 							break;
 						case requests::memory_operation::write_virtual:
-							status = mem::write_virtual_memory(process_id, base_address, size, buffer);
+							status = memory::write_virtual_memory(process_id, base_address, size, buffer);
 							break;
 						case requests::memory_operation::fill_virtual:
-							status = mem::fill_virtual_memory(process_id, base_address, size, memory_request.value);
+							status = memory::fill_virtual_memory(process_id, base_address, size, memory_request.value);
 							break;
 						case requests::memory_operation::zero_virtual:
-							status = mem::zero_virtual_memory(process_id, base_address, size);
+							status = memory::zero_virtual_memory(process_id, base_address, size);
 							break;
 						case requests::memory_operation::allocate_virtual:
-							status = mem::allocate_virtual_memory(process_id, base_address, size, memory_request.allocation_type,
+							status = memory::allocate_virtual_memory(process_id, base_address, size, memory_request.allocation_type,
 								memory_request.protect);
 							request.response(base_address);
 							break;
 						case requests::memory_operation::free_virtual:
-							status =  mem::free_virtual_memory(process_id, base_address, size, memory_request.free_type);
+							status =  memory::free_virtual_memory(process_id, base_address, size, memory_request.free_type);
 						case requests::memory_operation::secure_virtual:
 						{
-							auto result = mem::secure_virtual_memory(process_id, base_address, size, memory_request.probe_mode, memory_request.flags);
+							auto result = memory::secure_virtual_memory(process_id, base_address, size, memory_request.probe_mode, memory_request.flags);
 							if (result == nullptr)
 							{
 								status = STATUS_UNSUCCESSFUL;
@@ -88,20 +88,20 @@ namespace com {
 							break;
 						}
 						case requests::memory_operation::unsecure_virtual:
-							mem::unsecure_virtual_memory(process_id, base_address);
+							memory::unsecure_virtual_memory(process_id, base_address);
 							status = STATUS_SUCCESS;
 						case requests::memory_operation::read_physical:
-							status = mem::read_physical_memory(process_id, base_address, buffer, size);
+							status = memory::read_physical_memory(process_id, base_address, buffer, size);
 							break;
 						case requests::memory_operation::write_physical:
-							status = mem::write_physical_memory(process_id, base_address, buffer, size);
+							status = memory::write_physical_memory(process_id, base_address, buffer, size);
 							break;
 						default:
 							status = STATUS_INVALID_PARAMETER;
 							break;
 					}
 
-					if (disable_protection) mem::enable_write_protect(irql);
+					if (disable_protection) memory::enable_write_protect(irql);
 					return status;
 			});
 			
@@ -138,6 +138,7 @@ namespace com {
 				auto status = ZwOpenProcess(&handle, PROCESS_ALL_ACCESS, &attribute, &id);
 				request.response(handle);
 				#else
+
 				auto previous_mode{ util::set_previous_mode(MODE::KernelMode) };
 				HANDLE process;
 				auto status{ process::open_process_by_id(request.value(), process) };

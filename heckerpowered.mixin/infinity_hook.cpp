@@ -1,6 +1,6 @@
 #include "infinity_hook.hpp"
 
-namespace hook {
+namespace hook::infinity_hook {
 	std::unordered_map<void*, void*>* hooked_functions;
 
 	void __fastcall callback(unsigned long ssdt_index [[maybe_unused]], void** ssdt_address) {
@@ -16,7 +16,7 @@ namespace hook {
 	void hook_export(const wchar_t* function_name, void* address) noexcept {
 		auto function = proc::get_kernel_procedure(function_name);
 		if (function == nullptr) {
-			DbgPrint("[WARNING] Unable to find function \"%ls\"\n", function_name);
+			println("[WARNING] Unable to find function \"%ls\"", function_name);
 			return;
 		}
 
@@ -26,7 +26,7 @@ namespace hook {
 	void hook_ssdt(const char* ssdt_name, void* address) noexcept {
 		const int ssdt_index{ ssdt::get_ssdt_index(ssdt_name) };
 		if (ssdt_index == -1) {
-			DbgPrint("[WARNING] Unable to find ssdt function \"%s\"\n", ssdt_name);
+			println("[WARNING] Unable to find ssdt function \"%s\"", ssdt_name);
 			return;
 		}
 

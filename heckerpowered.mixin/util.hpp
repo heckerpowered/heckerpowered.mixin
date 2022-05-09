@@ -6,6 +6,8 @@
 #include <string>
 #include "lde.hpp"
 
+#define println(format, ...) DbgPrintEx(DPFLTR_TYPE::DPFLTR_IHVDRIVER_ID,DPFLTR_ERROR_LEVEL,"[Mixins]: " format "\n",##__VA_ARGS__)
+
 namespace util
 {
 	MODE set_previous_mode(MODE mode) noexcept;

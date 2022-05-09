@@ -52,7 +52,7 @@ namespace util
 			return STATUS_SUCCESS;
 		}
 
-		result.Buffer = reinterpret_cast<wchar_t*>(mem::allocate<POOL_TYPE::PagedPool>(source.MaximumLength, false));
+		result.Buffer = reinterpret_cast<wchar_t*>(memory::allocate<POOL_TYPE::PagedPool>(source.MaximumLength, false));
 		result.Length = source.Length;
 		result.MaximumLength = source.MaximumLength;
 		memcpy(result.Buffer, source.Buffer, source.Length);
@@ -64,7 +64,7 @@ namespace util
 	{
 		if (size == 0) return STATUS_INVALID_PARAMETER;
 
-		result.Buffer = reinterpret_cast<wchar_t*>(mem::allocate<POOL_TYPE::PagedPool>(size));
+		result.Buffer = reinterpret_cast<wchar_t*>(memory::allocate<POOL_TYPE::PagedPool>(size));
 		if (result.Buffer == nullptr) return STATUS_INSUFFICIENT_RESOURCES;
 
 		result.Length = 0;

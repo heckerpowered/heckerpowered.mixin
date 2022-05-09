@@ -54,7 +54,7 @@ namespace guard
 		guarded_processes = new std::unordered_map<HANDLE, guard_level>;
 
 		#pragma region INFINITY HOOK
-		hook::hook_export(L"NtOpenProcess", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
+		hook::infinity_hook::hook_export(L"NtOpenProcess", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
 			[](_Out_ PHANDLE ProcessHandle, _In_ ACCESS_MASK DesiredAccess, _In_ POBJECT_ATTRIBUTES ObjectAttributes, _In_opt_ PCLIENT_ID ClientId)
 		{
 			if (ClientId && guarded(ClientId->UniqueProcess)) return STATUS_ACCESS_DENIED;
@@ -62,7 +62,7 @@ namespace guard
 			return NtOpenProcess(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
 		}));
 
-		hook::hook_ssdt("NtTerminateThread", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ThreadHandle, NTSTATUS ExitStatus)
+		hook::infinity_hook::hook_ssdt("NtTerminateThread", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ThreadHandle, NTSTATUS ExitStatus)
 		{
 			if (ThreadHandle)
 			{
@@ -78,7 +78,7 @@ namespace guard
 			return NtTerminateThread(ThreadHandle, ExitStatus);
 		}));
 
-		hook::hook_export(L"NtOpenThread", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
+		hook::infinity_hook::hook_export(L"NtOpenThread", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
 			[](_Out_ PHANDLE ThreadHandle, _In_ ACCESS_MASK DesiredAccess, _In_ POBJECT_ATTRIBUTES ObjectAttributes, _In_ PCLIENT_ID ClientId)
 		{
 			if (guarded(ClientId->UniqueProcess)){ return STATUS_ACCESS_DENIED; }
@@ -87,7 +87,7 @@ namespace guard
 		}));
 
 		using NtQuerySystemInformation_t = NTSTATUS(*)(SYSTEM_INFORMATION_CLASS, PVOID, ULONG, PULONG);
-		hook::hook_ssdt("NtQuerySystemInformation", static_cast<NtQuerySystemInformation_t>(
+		hook::infinity_hook::hook_ssdt("NtQuerySystemInformation", static_cast<NtQuerySystemInformation_t>(
 			[](SYSTEM_INFORMATION_CLASS SystemInformationClass, PVOID SystemInformation, ULONG SystemInformationLength, PULONG ReturnLength)
 		{
 			static auto NtQuerySystemInformation{
@@ -131,7 +131,7 @@ namespace guard
 			return status;
 		}));
 
-		hook::hook_ssdt("NtTerminateProcess", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
+		hook::infinity_hook::hook_ssdt("NtTerminateProcess", static_cast<NTSTATUS(*)(HANDLE, NTSTATUS)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
 		{
 			if (ProcessHandle)
 			{
@@ -153,7 +153,7 @@ namespace guard
 			return NtTerminateProcess(ProcessHandle, ExitStatus);
 		}));
 
-		hook::hook_ssdt("NtDebugActiveProcess", static_cast<NTSTATUS(*)(HANDLE, HANDLE)>([](HANDLE ProcessHandle, HANDLE DebugObjectHandle)
+		hook::infinity_hook::hook_ssdt("NtDebugActiveProcess", static_cast<NTSTATUS(*)(HANDLE, HANDLE)>([](HANDLE ProcessHandle, HANDLE DebugObjectHandle)
 		{
 			if (ProcessHandle)
 			{
@@ -171,7 +171,7 @@ namespace guard
 			return NtDebugActiveProcess(ProcessHandle, DebugObjectHandle);
 		}));
 
-		hook::hook_ssdt("NtDebugContinue", static_cast<NTSTATUS(*)(HANDLE, PCLIENT_ID, NTSTATUS)>([](HANDLE DebugHandle, PCLIENT_ID AppClientId,
+		hook::infinity_hook::hook_ssdt("NtDebugContinue", static_cast<NTSTATUS(*)(HANDLE, PCLIENT_ID, NTSTATUS)>([](HANDLE DebugHandle, PCLIENT_ID AppClientId,
 			NTSTATUS ContinueStatus)
 		{
 			if (require(AppClientId->UniqueProcess, guard_level::highest)) return STATUS_ACCESS_DENIED;
@@ -180,7 +180,7 @@ namespace guard
 			return NtDebugContinue(DebugHandle, AppClientId, ContinueStatus);
 		}));
 
-		hook::hook_ssdt("NtCreateThread", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, HANDLE, PCLIENT_ID, PCONTEXT, void*, BOOLEAN)>(
+		hook::infinity_hook::hook_ssdt("NtCreateThread", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, HANDLE, PCLIENT_ID, PCONTEXT, void*, BOOLEAN)>(
 			[](PHANDLE ThreadHandle, ACCESS_MASK DesiredAccess, POBJECT_ATTRIBUTES ObjectAttributes,
 				HANDLE ProcessHandle, PCLIENT_ID ClientId, PCONTEXT ThreadContext, void* InitialTeb, BOOLEAN CreateSuspended)
 		{
@@ -202,7 +202,7 @@ namespace guard
 			return NtCreateThread(ThreadHandle, DesiredAccess, ObjectAttributes, ProcessHandle, ClientId, ThreadContext, InitialTeb, CreateSuspended);
 		}));
 
-		hook::hook_ssdt("NtSuspendThread", static_cast<NTSTATUS(*)(HANDLE, PULONG)>([](HANDLE ThreadHandle, PULONG PreviousSuspendCount)
+		hook::infinity_hook::hook_ssdt("NtSuspendThread", static_cast<NTSTATUS(*)(HANDLE, PULONG)>([](HANDLE ThreadHandle, PULONG PreviousSuspendCount)
 		{
 			if (ThreadHandle)
 			{
@@ -218,7 +218,7 @@ namespace guard
 			return NtSuspendThread(ThreadHandle, PreviousSuspendCount);
 		}));
 
-		hook::hook_ssdt("NtQueueApcThread", static_cast<NTSTATUS(*)(HANDLE, PKNORMAL_ROUTINE, PVOID, PVOID, PVOID)>(
+		hook::infinity_hook::hook_ssdt("NtQueueApcThread", static_cast<NTSTATUS(*)(HANDLE, PKNORMAL_ROUTINE, PVOID, PVOID, PVOID)>(
 			[](HANDLE ThreadHandle, PKNORMAL_ROUTINE ApcRoutine, PVOID ApcContext, PVOID Argument1, PVOID Argument2)
 		{
 			if (ThreadHandle)
@@ -236,7 +236,7 @@ namespace guard
 			return NtQueueApcThread(ThreadHandle, ApcRoutine, ApcContext, Argument1, Argument2);
 		}));
 
-		hook::hook_ssdt("NtAllocateVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, ULONG, PULONG, ULONG, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtAllocateVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, ULONG, PULONG, ULONG, ULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, ULONG ZeroBits, PULONG AllocationSize, ULONG AllocationType, ULONG Protect)
 		{
 			if (ProcessHandle)
@@ -256,7 +256,7 @@ namespace guard
 			return NtAllocateVirtualMemory(ProcessHandle, BaseAddress, ZeroBits, AllocationSize, AllocationType, Protect);
 		}));
 
-		hook::hook_ssdt("NtDuplicateObject", static_cast<NTSTATUS(*)(HANDLE, HANDLE, HANDLE, PHANDLE, ACCESS_MASK, ULONG, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtDuplicateObject", static_cast<NTSTATUS(*)(HANDLE, HANDLE, HANDLE, PHANDLE, ACCESS_MASK, ULONG, ULONG)>(
 			[](HANDLE SourceProcessHandle, HANDLE SourceHandle, HANDLE TargetProcessHandle, PHANDLE TargetHandle, ACCESS_MASK DesiredAccess,
 				ULONG Attributes, ULONG Options)
 		{
@@ -278,7 +278,7 @@ namespace guard
 			return NtDuplicateObject(SourceProcessHandle, SourceHandle, TargetProcessHandle, TargetHandle, DesiredAccess, Attributes, Options);
 		}));
 
-		hook::hook_ssdt("NtGetContextThread", static_cast<NTSTATUS(*)(HANDLE, PCONTEXT)>([](HANDLE ThreadHandle, PCONTEXT Context)
+		hook::infinity_hook::hook_ssdt("NtGetContextThread", static_cast<NTSTATUS(*)(HANDLE, PCONTEXT)>([](HANDLE ThreadHandle, PCONTEXT Context)
 		{
 			if (ThreadHandle)
 			{
@@ -294,7 +294,7 @@ namespace guard
 			return NtGetContextThread(ThreadHandle, Context);
 		}));
 
-		hook::hook_ssdt("NtSetContextThread", static_cast<NTSTATUS(*)(HANDLE, PCONTEXT)>([](HANDLE ThreadHandle, PCONTEXT Context)
+		hook::infinity_hook::hook_ssdt("NtSetContextThread", static_cast<NTSTATUS(*)(HANDLE, PCONTEXT)>([](HANDLE ThreadHandle, PCONTEXT Context)
 		{
 			if (ThreadHandle)
 			{
@@ -310,7 +310,7 @@ namespace guard
 			return NtSetContextThread(ThreadHandle, Context);
 		}));
 
-		hook::hook_ssdt("NtQueryInformationProcess", static_cast<NTSTATUS(*)(HANDLE, PROCESSINFOCLASS, PVOID, ULONG, PULONG)>(
+		hook::infinity_hook::hook_ssdt("NtQueryInformationProcess", static_cast<NTSTATUS(*)(HANDLE, PROCESSINFOCLASS, PVOID, ULONG, PULONG)>(
 			[](HANDLE ProcessHandle, PROCESSINFOCLASS ProcessInformationClass, PVOID ProcessInformation, ULONG ProcessInformationLength, PULONG ReturnLength)
 		{
 			if (ProcessHandle)
@@ -330,7 +330,7 @@ namespace guard
 			return NtQueryInformationProcess(ProcessHandle, ProcessInformationClass, ProcessInformation, ProcessInformationLength, ReturnLength);
 		}));
 
-		hook::hook_ssdt("NtSetInformationProcess", static_cast<NTSTATUS(*)(HANDLE, PROCESSINFOCLASS, PVOID, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtSetInformationProcess", static_cast<NTSTATUS(*)(HANDLE, PROCESSINFOCLASS, PVOID, ULONG)>(
 			[](HANDLE ProcessHandle, PROCESSINFOCLASS ProcessInformationClass, PVOID ProcessInformation, ULONG ProcessInformationLength)
 		{
 			if (ProcessHandle)
@@ -350,7 +350,7 @@ namespace guard
 			return NtSetInformationProcess(ProcessHandle, ProcessInformationClass, ProcessInformation, ProcessInformationLength);
 		}));
 
-		hook::hook_ssdt("NtSetInformationThread", static_cast<NTSTATUS(*)(HANDLE, THREADINFOCLASS, PVOID, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtSetInformationThread", static_cast<NTSTATUS(*)(HANDLE, THREADINFOCLASS, PVOID, ULONG)>(
 			[](HANDLE ThreadHandle, THREADINFOCLASS ThreadInformationClass, PVOID ThreadInformation, ULONG ThreadInformationLength)
 		{
 			if (ThreadHandle)
@@ -368,7 +368,7 @@ namespace guard
 			return NtSetInformationThread(ThreadHandle, ThreadInformationClass, ThreadInformation, ThreadInformationLength);
 		}));
 
-		hook::hook_ssdt("NtQueryInformationThread", static_cast<NTSTATUS(*)(HANDLE, THREADINFOCLASS, PVOID, ULONG, PULONG)>(
+		hook::infinity_hook::hook_ssdt("NtQueryInformationThread", static_cast<NTSTATUS(*)(HANDLE, THREADINFOCLASS, PVOID, ULONG, PULONG)>(
 			[](HANDLE ThreadHandle, THREADINFOCLASS ThreadInformationClass, PVOID ThreadInformation, ULONG ThreadInformationLength, PULONG ReturnLength)
 		{
 			if (ThreadHandle)
@@ -386,7 +386,7 @@ namespace guard
 			return NtQueryInformationThread(ThreadHandle, ThreadInformationClass, ThreadInformation, ThreadInformationLength, ReturnLength);
 		}));
 
-		hook::hook_ssdt("NtFreeVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtFreeVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, PULONG FreeSize, ULONG FreeType)
 		{
 			if (ProcessHandle)
@@ -406,7 +406,7 @@ namespace guard
 			return NtFreeVirtualMemory(ProcessHandle, BaseAddress, FreeSize, FreeType);
 		}));
 
-		hook::hook_ssdt("NtProtectVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG, PULONG)>(
+		hook::infinity_hook::hook_ssdt("NtProtectVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG, PULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, PULONG ProtectSize, ULONG NewProtect, PULONG OldProtect)
 		{
 			if (ProcessHandle)
@@ -426,7 +426,7 @@ namespace guard
 			return NtProtectVirtualMemory(ProcessHandle, BaseAddress, ProtectSize, NewProtect, OldProtect);
 		}));
 
-		hook::hook_ssdt("NtLockVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtLockVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, PULONG LockSize, ULONG LockType)
 		{
 			if (ProcessHandle)
@@ -446,7 +446,7 @@ namespace guard
 			return NtLockVirtualMemory(ProcessHandle, BaseAddress, LockSize, LockType);
 		}));
 
-		hook::hook_ssdt("NtUnlockVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
+		hook::infinity_hook::hook_ssdt("NtUnlockVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, ULONG)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, PULONG LockSize, ULONG LockType)
 		{
 			if (ProcessHandle)
@@ -466,7 +466,7 @@ namespace guard
 			return NtUnlockVirtualMemory(ProcessHandle, BaseAddress, LockSize, LockType);
 		}));
 
-		hook::hook_ssdt("NtReadVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID, PVOID, ULONG, PULONG)>(
+		hook::infinity_hook::hook_ssdt("NtReadVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID, PVOID, ULONG, PULONG)>(
 			[](HANDLE ProcessHandle, PVOID BaseAddress, PVOID Buffer, ULONG BufferLength, PULONG ReturnLength)
 		{
 			if (ProcessHandle)
@@ -486,7 +486,7 @@ namespace guard
 			return NtReadVirtualMemory(ProcessHandle, BaseAddress, Buffer, BufferLength, ReturnLength);
 		}));
 
-		hook::hook_ssdt("NtWriteVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID, PVOID, ULONG, PULONG)>(
+		hook::infinity_hook::hook_ssdt("NtWriteVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID, PVOID, ULONG, PULONG)>(
 			[](HANDLE ProcessHandle, PVOID BaseAddress, PVOID Buffer, ULONG BufferLength, PULONG ReturnLength)
 		{
 			if (ProcessHandle)
@@ -506,7 +506,7 @@ namespace guard
 			return NtWriteVirtualMemory(ProcessHandle, BaseAddress, Buffer, BufferLength, ReturnLength);
 		}));
 
-		hook::hook_ssdt("NtFlushVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, PIO_STATUS_BLOCK)>(
+		hook::infinity_hook::hook_ssdt("NtFlushVirtualMemory", static_cast<NTSTATUS(*)(HANDLE, PVOID*, PULONG, PIO_STATUS_BLOCK)>(
 			[](HANDLE ProcessHandle, PVOID* BaseAddress, PULONG FlushSize, PIO_STATUS_BLOCK IoStatusBlock)
 		{
 			if (ProcessHandle)
@@ -531,7 +531,7 @@ namespace guard
 		// Inline hook disabled.
 		#ifdef INLINE_HOOK
 
-		inline_hook::hook(NtOpenProcess, static_cast<decltype(&NtOpenProcess)>([](PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess,
+		inline_hook::infinity_hook::hook(NtOpenProcess, static_cast<decltype(&NtOpenProcess)>([](PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess,
 			POBJECT_ATTRIBUTES ObjectAttributes, PCLIENT_ID ClientId)
 		{
 			if (MmIsAddressValid(ClientId) && is_protected(ClientId->UniqueProcess))
@@ -539,10 +539,10 @@ namespace guard
 				return STATUS_ACCESS_DENIED;
 			}
 
-			return static_cast<decltype(&NtOpenProcess)>(inline_hook::get_unhooked(NtOpenProcess))(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
+			return static_cast<decltype(&NtOpenProcess)>(inline_hook::infinity_hook::get_unhooked(NtOpenProcess))(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
 		}));
 
-		inline_hook::hook(ZwOpenProcess, static_cast<decltype(&ZwOpenProcess)>([](PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess,
+		inline_hook::infinity_hook::hook(ZwOpenProcess, static_cast<decltype(&ZwOpenProcess)>([](PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess,
 			POBJECT_ATTRIBUTES ObjectAttributes, PCLIENT_ID ClientId)
 		{
 			if (MmIsAddressValid(ClientId) && is_protected(ClientId->UniqueProcess))
@@ -550,34 +550,34 @@ namespace guard
 				return STATUS_ACCESS_DENIED;
 			}
 
-			return static_cast<decltype(&ZwOpenProcess)>(inline_hook::get_unhooked(ZwOpenProcess))(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
+			return static_cast<decltype(&ZwOpenProcess)>(inline_hook::infinity_hook::get_unhooked(ZwOpenProcess))(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
 		}));
 
-		inline_hook::hook(ZwTerminateProcess, static_cast<decltype(&ZwTerminateProcess)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
+		inline_hook::infinity_hook::hook(ZwTerminateProcess, static_cast<decltype(&ZwTerminateProcess)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
 		{
 			PEPROCESS process{};
 			auto status{ process::handle_to_process(ProcessHandle, process) };
 			if (!NT_SUCCESS(status)) { return status; }
 			if (is_protected(PsGetProcessId(process))) { return STATUS_ACCESS_DENIED; }
-			return static_cast<decltype(&ZwTerminateProcess)>(inline_hook::get_unhooked(ZwTerminateProcess))(ProcessHandle, ExitStatus);
+			return static_cast<decltype(&ZwTerminateProcess)>(inline_hook::infinity_hook::get_unhooked(ZwTerminateProcess))(ProcessHandle, ExitStatus);
 		}));
 
-		inline_hook::hook(L"NtTerminateProcess"e, static_cast<decltype(&ZwTerminateProcess)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
+		inline_hook::infinity_hook::hook(L"NtTerminateProcess"e, static_cast<decltype(&ZwTerminateProcess)>([](HANDLE ProcessHandle, NTSTATUS ExitStatus)
 		{
 			PEPROCESS process{};
 			auto status{ process::handle_to_process(ProcessHandle, process) };
 			if (!NT_SUCCESS(status)) { return status; }
 			if (is_protected(PsGetProcessId(process))) { return STATUS_ACCESS_DENIED; }
-			return static_cast<decltype(&ZwTerminateProcess)>(inline_hook::get_unhooked(L"NtTerminateProcess"e))(ProcessHandle, ExitStatus);
+			return static_cast<decltype(&ZwTerminateProcess)>(inline_hook::infinity_hook::get_unhooked(L"NtTerminateProcess"e))(ProcessHandle, ExitStatus);
 		}));
 
-		inline_hook::hook(PsLookupProcessByProcessId, static_cast<decltype(&PsLookupProcessByProcessId)>([](HANDLE ProcessId, PEPROCESS* Process)
+		inline_hook::infinity_hook::hook(PsLookupProcessByProcessId, static_cast<decltype(&PsLookupProcessByProcessId)>([](HANDLE ProcessId, PEPROCESS* Process)
 		{
 			if (is_protected(ProcessId)) { return STATUS_ACCESS_DENIED; }
-			return static_cast<decltype(&PsLookupProcessByProcessId)>(inline_hook::get_unhooked(PsLookupProcessByProcessId))(ProcessId, Process);
+			return static_cast<decltype(&PsLookupProcessByProcessId)>(inline_hook::infinity_hook::get_unhooked(PsLookupProcessByProcessId))(ProcessId, Process);
 		}));
 
-		inline_hook::hook(ObOpenObjectByPointer, static_cast<decltype(&ObOpenObjectByPointer)>([](PVOID Object, ULONG HandleAttributes,
+		inline_hook::infinity_hook::hook(ObOpenObjectByPointer, static_cast<decltype(&ObOpenObjectByPointer)>([](PVOID Object, ULONG HandleAttributes,
 			PACCESS_STATE PassedAccessState, ACCESS_MASK DesiredAccess, POBJECT_TYPE ObjectType, KPROCESSOR_MODE AccessMode, PHANDLE Handle)
 		{
 			if (ObjectType == *PsProcessType && is_protected(PsGetProcessId(reinterpret_cast<PEPROCESS>(Object))))
@@ -585,11 +585,11 @@ namespace guard
 				return STATUS_ACCESS_DENIED;
 			}
 
-			return static_cast<decltype(&ObOpenObjectByPointer)>(inline_hook::get_unhooked(ObOpenObjectByPointer))(Object, HandleAttributes, PassedAccessState,
+			return static_cast<decltype(&ObOpenObjectByPointer)>(inline_hook::infinity_hook::get_unhooked(ObOpenObjectByPointer))(Object, HandleAttributes, PassedAccessState,
 				DesiredAccess, ObjectType, AccessMode, Handle);
 		}));
 
-		inline_hook::hook(ObReferenceObjectByHandle, static_cast<decltype(&ObReferenceObjectByHandle)>([](HANDLE Handle, ACCESS_MASK DesiredAccess,
+		inline_hook::infinity_hook::hook(ObReferenceObjectByHandle, static_cast<decltype(&ObReferenceObjectByHandle)>([](HANDLE Handle, ACCESS_MASK DesiredAccess,
 			POBJECT_TYPE ObjectType, KPROCESSOR_MODE AccessMode, PVOID* Object, POBJECT_HANDLE_INFORMATION HandleInformation)
 		{
 			if (ObjectType)
@@ -597,7 +597,7 @@ namespace guard
 				if (ObjectType == *PsProcessType)
 				{
 					PEPROCESS process{};
-					if (NT_SUCCESS(static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::get_unhooked(ObReferenceObjectByHandle))(Handle, PROCESS_ALL_ACCESS,
+					if (NT_SUCCESS(static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::infinity_hook::get_unhooked(ObReferenceObjectByHandle))(Handle, PROCESS_ALL_ACCESS,
 						*PsProcessType, MODE::KernelMode, reinterpret_cast<void**>(&process), nullptr)) && is_protected(PsGetProcessId(process)))
 					{
 						return STATUS_ACCESS_DENIED;
@@ -606,7 +606,7 @@ namespace guard
 				else if (ObjectType == *PsThreadType)
 				{
 					PETHREAD thread{};
-					if (NT_SUCCESS(static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::get_unhooked(ObReferenceObjectByHandle))(Handle, PROCESS_ALL_ACCESS,
+					if (NT_SUCCESS(static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::infinity_hook::get_unhooked(ObReferenceObjectByHandle))(Handle, PROCESS_ALL_ACCESS,
 						*PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread), nullptr)) && is_protected(PsGetProcessId(IoThreadToProcess(thread))))
 					{
 						return STATUS_ACCESS_DENIED;
@@ -614,22 +614,22 @@ namespace guard
 				}
 			}
 
-			return static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::get_unhooked(ObReferenceObjectByHandle))(Handle, DesiredAccess, ObjectType,
+			return static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::infinity_hook::get_unhooked(ObReferenceObjectByHandle))(Handle, DesiredAccess, ObjectType,
 				AccessMode, Object, HandleInformation);
 		}));
 
-		inline_hook::hook(PsLookupThreadByThreadId, static_cast<decltype(&PsLookupThreadByThreadId)>([](HANDLE ThreadId, PETHREAD* Thread)
+		inline_hook::infinity_hook::hook(PsLookupThreadByThreadId, static_cast<decltype(&PsLookupThreadByThreadId)>([](HANDLE ThreadId, PETHREAD* Thread)
 		{
 			HANDLE thread_handle{};
 			PETHREAD thread{};
 			if (NT_SUCCESS(thread::open_thread_by_id(ThreadId, thread_handle)) &&
-				static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::get_unhooked(ObReferenceObjectByHandle))(thread_handle, THREAD_ALERT, *PsThreadType,
+				static_cast<decltype(&ObReferenceObjectByHandle)>(inline_hook::infinity_hook::get_unhooked(ObReferenceObjectByHandle))(thread_handle, THREAD_ALERT, *PsThreadType,
 					MODE::KernelMode, reinterpret_cast<void**>(thread), nullptr) && is_protected(PsGetProcessId(thread::thread_to_process(thread))))
 			{
 				return STATUS_ACCESS_DENIED;
 			}
 
-			return static_cast<decltype(&PsLookupThreadByThreadId)>(inline_hook::get_unhooked(PsLookupThreadByThreadId))(ThreadId, Thread);
+			return static_cast<decltype(&PsLookupThreadByThreadId)>(inline_hook::infinity_hook::get_unhooked(PsLookupThreadByThreadId))(ThreadId, Thread);
 		}));
 		#endif
 	}

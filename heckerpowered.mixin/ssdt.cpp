@@ -112,13 +112,13 @@ namespace ssdt
 			if (NT_SUCCESS(status))
 			{
 				static_file_size = standard_information.EndOfFile.LowPart;
-				static_file_data = reinterpret_cast<unsigned char*>(mem::allocate(static_file_size, true));
+				static_file_data = reinterpret_cast<unsigned char*>(memory::allocate(static_file_size, true));
 
 				LARGE_INTEGER offset{};
 				offset.LowPart = offset.HighPart = 0;
 				status = ZwReadFile(file_handle, nullptr, nullptr, nullptr, &status_block, static_file_data, static_file_size, &offset, nullptr);
 
-				if (!NT_SUCCESS(status)) mem::free(static_file_data);
+				if (!NT_SUCCESS(status)) memory::free(static_file_data);
 			}
 
 			ZwClose(file_handle);

@@ -7,6 +7,9 @@
 #pragma comment(lib,"libcntpr.lib")
 extern "C" __declspec(selectany) int _fltused = 0;
 
+#define NOMINMAX
+#undef min
+#undef max
 #undef _HAS_EXCEPTIONS
 #undef _HAS_STATIC_RTTI
 // This enables use of STL in kernel-mode.

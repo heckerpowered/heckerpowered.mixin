@@ -301,7 +301,7 @@ namespace thread
 
 	NTSTATUS queue_user_apc(PETHREAD thread, void* user_function, void* arg1, void* arg2, void* arg3, bool force) noexcept
 	{
-		auto inject_apc{ reinterpret_cast<PKAPC>(mem::allocate(sizeof(KAPC))) };
+		auto inject_apc{ reinterpret_cast<PKAPC>(memory::allocate(sizeof(KAPC))) };
 		if (inject_apc == nullptr) return STATUS_INSUFFICIENT_RESOURCES;
 
 		KeInitializeApc(inject_apc, thread, KAPC_ENVIRONMENT::OriginalApcEnvironment, [](PKAPC apc, PKNORMAL_ROUTINE*, void** context, void**, void**)
@@ -313,17 +313,17 @@ namespace thread
 			if (PsGetCurrentProcessWow64Process() != NULL)
 				PsWrapApcWow64Thread(context, reinterpret_cast<void**>(context));
 
-			mem::free(apc);
+			memory::free(apc);
 		}, nullptr, static_cast<PKNORMAL_ROUTINE>(user_function), MODE::UserMode, arg1);
 
 		PKAPC prepare_apc{};
 		if (force)
 		{
-			prepare_apc = reinterpret_cast<PKAPC>(mem::allocate(sizeof(KAPC)));
+			prepare_apc = reinterpret_cast<PKAPC>(memory::allocate(sizeof(KAPC)));
 			KeInitializeApc(prepare_apc, thread, KAPC_ENVIRONMENT::OriginalApcEnvironment, [](PKAPC apc, PKNORMAL_ROUTINE*, void**, void**, void**)
 			{
 				KeTestAlertThread(MODE::UserMode);
-				mem::free(apc);
+				memory::free(apc);
 			}, nullptr, nullptr, MODE::KernelMode, nullptr);
 		}
 
@@ -335,8 +335,8 @@ namespace thread
 		}
 		else
 		{
-			mem::free(inject_apc);
-			if (prepare_apc) mem::free(prepare_apc);
+			memory::free(inject_apc);
+			if (prepare_apc) memory::free(prepare_apc);
 
 			return STATUS_NOT_CAPABLE;
 		}

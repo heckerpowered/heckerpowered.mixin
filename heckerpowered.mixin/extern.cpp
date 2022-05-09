@@ -15,11 +15,11 @@ namespace ext {
 		NTSTATUS status{ ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS::SystemModuleInformation, nullptr, bytes, &bytes) };
 		if (bytes == 0) return nullptr;
 
-		auto modules{ reinterpret_cast<PRTL_PROCESS_MODULES>(mem::allocate(bytes)) };
+		auto modules{ reinterpret_cast<PRTL_PROCESS_MODULES>(memory::allocate(bytes)) };
 		status = ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS::SystemModuleInformation, modules, bytes, &bytes);
 
 		if (!NT_SUCCESS(status)) {
-			mem::free(modules);
+			memory::free(modules);
 			return nullptr;
 		}
 
@@ -35,7 +35,7 @@ namespace ext {
 			}
 		}
 
-		mem::free(modules);
+		memory::free(modules);
 		return kernel_base;
 	}
 

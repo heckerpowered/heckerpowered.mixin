@@ -1,6 +1,6 @@
 #include "inline_hook.hpp"
 
-namespace inline_hook
+namespace hook::inline_hook
 {
 	std::unordered_map<void*, std::tuple<void*, unsigned char*, std::size_t>>* hooked_functions;
 
@@ -26,12 +26,12 @@ namespace inline_hook
 	void* hook_internal(void* victim, void* target, void*& original, std::size_t& patch_size)
 	{
 		patch_size = get_patch_size(reinterpret_cast<unsigned char*>(victim));
-		auto original_header{ mem::allocate(patch_size) };
-		auto irql{ mem::disable_write_protect() };
+		auto original_header{ memory::allocate(patch_size) };
+		auto irql{ memory::disable_write_protect() };
 		memcpy(original_header, victim, patch_size);
-		mem::enable_write_protect(irql);
+		memory::enable_write_protect(irql);
 
-		auto original_function{ mem::allocate(patch_size + 14) };
+		auto original_function{ memory::allocate(patch_size + 14) };
 		memset(original_function, 0x90, patch_size + 14);
 
 		unsigned char jmp_code[]{ "\xFF\x25\x00\x00\x00\x00\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF" };
@@ -46,18 +46,18 @@ namespace inline_hook
 		begin = reinterpret_cast<unsigned __int64>(target);
 		memcpy(jmp_code + 6, &begin, sizeof(begin));
 
-		irql = mem::disable_write_protect();
+		irql = memory::disable_write_protect();
 		memset(victim, 0x90, patch_size);
 		memcpy(victim, jmp_code, 14);
-		mem::enable_write_protect(irql);
+		memory::enable_write_protect(irql);
 		return original_header;
 	}
 
 	void unhook_internal(void* victim, void* original, std::size_t patch_size)
 	{
-		auto irql{ mem::disable_write_protect() };
+		auto irql{ memory::disable_write_protect() };
 		memcpy(victim, original, patch_size);
-		mem::enable_write_protect(irql);
+		memory::enable_write_protect(irql);
 	}
 
 	void uninstall_hooks() noexcept

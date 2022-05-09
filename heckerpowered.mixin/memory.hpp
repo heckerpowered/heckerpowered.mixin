@@ -3,7 +3,7 @@
 #include <intrin.h>
 #include "process.hpp"
 
-namespace mem {
+namespace memory {
 	bool should_attach(void* process_id) noexcept;
 
 	NTSTATUS write_virtual_memory(void*& process_id, void*& base_address, const unsigned __int64& buffer_size, void*& buffer) noexcept;
@@ -30,7 +30,12 @@ namespace mem {
 	void free(void* address) noexcept;
 	void enable_write_protect(KIRQL irql) noexcept;
 	KIRQL disable_write_protect() noexcept;
-	template<POOL_TYPE type = POOL_TYPE::NonPagedPoolExecute> void* allocate(size_t size, bool zero = true) noexcept {
+
+	void* allocate_contiguous(std::size_t size, bool zero = true) noexcept;
+	void free_contiguous(void* address) noexcept;
+
+	template<POOL_TYPE type = POOL_TYPE::NonPagedPoolExecute> void* allocate(std::size_t size, bool zero = true) noexcept
+	{
 		void* address = ExAllocatePoolWithTag(type, size, 'TRC_');
 		if (address == nullptr) return nullptr;
 		if (zero) RtlZeroMemory(address, size);

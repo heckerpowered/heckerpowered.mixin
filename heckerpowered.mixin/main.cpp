@@ -9,7 +9,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	status = compatibility::initialize_dynamic_data();
 	if (!NT_SUCCESS(status)) return status;
 
-	status = hook::initialize();
+	status = hook::infinity_hook::initialize();
 	if (!NT_SUCCESS(status)) return status;
 
 	guard::initialize();

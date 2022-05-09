@@ -13,8 +13,7 @@
 #include "image_callback.hpp"
 #include "system.hpp"
 #include "concurrent.hpp"
-#include "easy_anti_cheat.hpp"
-#include "virtualization.hpp"
+#include "string_literal.hpp"
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
 

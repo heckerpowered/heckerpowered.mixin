@@ -236,6 +236,7 @@
     <ClCompile Include="compatibility.cpp" />
     <ClCompile Include="concurrent.cpp" />
     <ClCompile Include="easy_anti_cheat.cpp" />
+    <ClCompile Include="extended.cpp" />
     <ClCompile Include="extern.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="filter.cpp" />
@@ -245,6 +246,7 @@
     <ClCompile Include="image_callback.cpp" />
     <ClCompile Include="infinity_hook.cpp" />
     <ClCompile Include="inline_hook.cpp" />
+    <ClCompile Include="io.cpp" />
     <ClCompile Include="lde.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
@@ -258,11 +260,13 @@
     <ClCompile Include="process_callback.cpp" />
     <ClCompile Include="process_guard.cpp" />
     <ClCompile Include="ssdt.cpp" />
+    <ClCompile Include="string_literap.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="thread.cpp" />
     <ClCompile Include="thread_callback.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="virtualization.cpp" />
+    <ClCompile Include="virtual_hook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assembly.hpp" />
@@ -270,6 +274,7 @@
     <ClInclude Include="compatibility.hpp" />
     <ClInclude Include="concurrent.hpp" />
     <ClInclude Include="easy_anti_cheat.hpp" />
+    <ClInclude Include="extended.hpp" />
     <ClInclude Include="extern.hpp" />
     <ClInclude Include="file.hpp" />
     <ClInclude Include="filter.hpp" />
@@ -277,10 +282,12 @@
     <ClInclude Include="hde64.h" />
     <ClInclude Include="headers.hpp" />
     <ClInclude Include="hook.hpp" />
+    <ClInclude Include="ia32.hpp" />
     <ClInclude Include="image_callback.hpp" />
     <ClInclude Include="imports.hpp" />
     <ClInclude Include="infinity_hook.hpp" />
     <ClInclude Include="inline_hook.hpp" />
+    <ClInclude Include="io.hpp" />
     <ClInclude Include="kernel_stl.hpp" />
     <ClInclude Include="lde.hpp" />
     <ClInclude Include="main.hpp" />
@@ -293,6 +300,7 @@
     <ClInclude Include="native_struct7.hpp" />
     <ClInclude Include="native_struct81.hpp" />
     <ClInclude Include="native_sturct8.hpp" />
+    <ClInclude Include="nmd_assembly.hpp" />
     <ClInclude Include="object_callback.hpp" />
     <ClInclude Include="patch_guard.hpp" />
     <ClInclude Include="pestructs.hpp" />
@@ -302,6 +310,7 @@
     <ClInclude Include="process_guard.hpp" />
     <ClInclude Include="pstdint.h" />
     <ClInclude Include="ssdt.hpp" />
+    <ClInclude Include="string_literal.hpp" />
     <ClInclude Include="system.hpp" />
     <ClInclude Include="table64.h" />
     <ClInclude Include="thread.hpp" />
@@ -309,9 +318,16 @@
     <ClInclude Include="util.hpp" />
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="virtualization.hpp" />
+    <ClInclude Include="virtualization_assembly.hpp" />
+    <ClInclude Include="virtual_hook.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="module.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="virtualization_assembly.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
