@@ -250,8 +250,6 @@
     <ClCompile Include="lde.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
-    <ClCompile Include="module.cpp" />
-    <ClCompile Include="module_map.cpp" />
     <ClCompile Include="native.cpp" />
     <ClCompile Include="object_callback.cpp" />
     <ClCompile Include="patch_guard.cpp" />
@@ -260,6 +258,7 @@
     <ClCompile Include="process_callback.cpp" />
     <ClCompile Include="process_guard.cpp" />
     <ClCompile Include="ssdt.cpp" />
+    <ClCompile Include="string_builder.cpp" />
     <ClCompile Include="string_literap.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="thread.cpp" />
@@ -292,7 +291,6 @@
     <ClInclude Include="lde.hpp" />
     <ClInclude Include="main.hpp" />
     <ClInclude Include="memory.hpp" />
-    <ClInclude Include="module_map.hpp" />
     <ClInclude Include="native.hpp" />
     <ClInclude Include="native_enum.hpp" />
     <ClInclude Include="native_struct.hpp" />
@@ -310,6 +308,7 @@
     <ClInclude Include="process_guard.hpp" />
     <ClInclude Include="pstdint.h" />
     <ClInclude Include="ssdt.hpp" />
+    <ClInclude Include="string_builder.hpp" />
     <ClInclude Include="string_literal.hpp" />
     <ClInclude Include="system.hpp" />
     <ClInclude Include="table64.h" />
@@ -320,9 +319,6 @@
     <ClInclude Include="virtualization.hpp" />
     <ClInclude Include="virtualization_assembly.hpp" />
     <ClInclude Include="virtual_hook.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="module.hpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="virtualization_assembly.asm">

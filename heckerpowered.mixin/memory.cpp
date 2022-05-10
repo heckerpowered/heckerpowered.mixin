@@ -33,7 +33,6 @@ namespace memory
 		const bool should_attach = memory::should_attach(process_id);
 		KAPC_STATE state;
 		if (should_attach) KeStackAttachProcess(process, &state);
-
 		__try
 		{
 			ProbeForWrite(base_address, buffer_size, sizeof(char));
@@ -205,7 +204,7 @@ namespace memory
 	}
 
 	#pragma warning(disable: 28167)
-	void enable_write_protect(KIRQL irql) noexcept
+	void disable_interrupt(KIRQL irql) noexcept
 	{
 		auto cr0 = __readcr0();
 		cr0 |= 0x10000;
@@ -214,7 +213,7 @@ namespace memory
 		KeLowerIrql(irql);
 	}
 
-	KIRQL disable_write_protect() noexcept
+	KIRQL enable_interrupt() noexcept
 	{
 		const auto irql = KeRaiseIrqlToDpcLevel();
 		auto cr0 = __readcr0();

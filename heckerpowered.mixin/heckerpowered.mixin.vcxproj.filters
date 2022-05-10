@@ -49,14 +49,8 @@
     <Filter Include="files\feature\callback\filter">
       <UniqueIdentifier>{38b4736d-a485-43b1-b89d-61d904963b36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\util\module">
-      <UniqueIdentifier>{ab4b6b84-e658-4763-930b-bb6c210e65ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\file">
       <UniqueIdentifier>{59f51180-fcf2-4be8-baa2-85ffab691c23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\module\map">
-      <UniqueIdentifier>{1a7c6e85-f1fe-4c1f-a8bb-94a50adcd3b0}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\util\native">
       <UniqueIdentifier>{62e281c2-7719-4da8-bc66-d4dcb1e2283f}</UniqueIdentifier>
@@ -183,14 +177,8 @@
     <ClCompile Include="filter.cpp">
       <Filter>files\feature\callback\filter</Filter>
     </ClCompile>
-    <ClCompile Include="module.cpp">
-      <Filter>files\util\module</Filter>
-    </ClCompile>
     <ClCompile Include="file.cpp">
       <Filter>files\util\file</Filter>
-    </ClCompile>
-    <ClCompile Include="module_map.cpp">
-      <Filter>files\util\module\map</Filter>
     </ClCompile>
     <ClCompile Include="native.cpp">
       <Filter>files\util\native</Filter>
@@ -244,6 +232,9 @@
       <Filter>files\util\io</Filter>
     </ClCompile>
     <ClCompile Include="string_literap.cpp">
+      <Filter>files\util\core</Filter>
+    </ClCompile>
+    <ClCompile Include="string_builder.cpp">
       <Filter>files\util\core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -338,9 +329,6 @@
     <ClInclude Include="file.hpp">
       <Filter>files\util\file</Filter>
     </ClInclude>
-    <ClInclude Include="module_map.hpp">
-      <Filter>files\util\module\map</Filter>
-    </ClInclude>
     <ClInclude Include="native.hpp">
       <Filter>files\util\native</Filter>
     </ClInclude>
@@ -401,11 +389,9 @@
     <ClInclude Include="string_literal.hpp">
       <Filter>files\util\core</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="module.hpp">
-      <Filter>files\util\module</Filter>
-    </None>
+    <ClInclude Include="string_builder.hpp">
+      <Filter>files\util\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="virtualization_assembly.asm">

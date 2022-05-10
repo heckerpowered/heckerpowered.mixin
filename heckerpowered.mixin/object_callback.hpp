@@ -1,6 +1,5 @@
 #pragma once
 #include <ntifs.h>
-#include "kernel_stl.hpp"
 #include <vector>
 #include <string>
 #include "process_guard.hpp"

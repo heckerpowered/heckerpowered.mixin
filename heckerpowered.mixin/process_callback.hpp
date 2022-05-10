@@ -1,10 +1,11 @@
 #pragma once
 #include <ntifs.h>
-#include "process_guard.hpp"
-#include "process.hpp"
 #include <set>
 #include <string>
 #include <deque>
+
+#include "process_guard.hpp"
+#include "process.hpp"
 
 namespace callback::process {
 

@@ -28,8 +28,8 @@ namespace memory {
 	NTSTATUS read_mdl_memory(void* destination, void* source, unsigned long size) noexcept;
 
 	void free(void* address) noexcept;
-	void enable_write_protect(KIRQL irql) noexcept;
-	KIRQL disable_write_protect() noexcept;
+	void disable_interrupt(KIRQL irql) noexcept;
+	KIRQL enable_interrupt() noexcept;
 
 	void* allocate_contiguous(std::size_t size, bool zero = true) noexcept;
 	void free_contiguous(void* address) noexcept;
@@ -45,9 +45,9 @@ namespace memory {
 
 	template<unsigned char..._Code>
 	inline void execute() noexcept {
-		auto function{ allocate(sizeof...(_Code)) };
+		auto function{ reinterpret_cast<char*>(allocate(sizeof...(_Code))) };
 		std::initializer_list<unsigned char> list{ _Code... };
-		memcpy(function, list.begin(), list.size());
+		std::copy(list.begin(), list.end(), function);
 
 		reinterpret_cast<void(__fastcall*)()>(function)();
 		free(function);

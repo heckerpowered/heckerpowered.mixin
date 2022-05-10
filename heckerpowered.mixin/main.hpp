@@ -1,5 +1,7 @@
 #pragma once
+
 #include <ntifs.h>
+#include "kernel_stl.hpp"
 #include "object_callback.hpp"
 #include "communication.hpp"
 #include "process_callback.hpp"

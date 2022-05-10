@@ -1,6 +1,5 @@
 #pragma once
 #include <ntifs.h>
-#include "kernel_stl.hpp"
 #include <unordered_map>
 #include <functional>
 #include "memory.hpp"
