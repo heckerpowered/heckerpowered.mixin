@@ -231,10 +231,11 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="assembly.cpp" />
     <ClCompile Include="communication.cpp" />
     <ClCompile Include="compatibility.cpp" />
     <ClCompile Include="concurrent.cpp" />
+    <ClCompile Include="core.cpp" />
+    <ClCompile Include="crc32.cpp" />
     <ClCompile Include="easy_anti_cheat.cpp" />
     <ClCompile Include="extended.cpp" />
     <ClCompile Include="extern.cpp" />
@@ -250,7 +251,6 @@
     <ClCompile Include="lde.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
-    <ClCompile Include="native.cpp" />
     <ClCompile Include="object_callback.cpp" />
     <ClCompile Include="patch_guard.cpp" />
     <ClCompile Include="procedure.cpp" />
@@ -268,10 +268,11 @@
     <ClCompile Include="virtual_hook.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="assembly.hpp" />
     <ClInclude Include="communication.hpp" />
     <ClInclude Include="compatibility.hpp" />
     <ClInclude Include="concurrent.hpp" />
+    <ClInclude Include="core.hpp" />
+    <ClInclude Include="crc32.hpp" />
     <ClInclude Include="easy_anti_cheat.hpp" />
     <ClInclude Include="extended.hpp" />
     <ClInclude Include="extern.hpp" />
@@ -291,7 +292,6 @@
     <ClInclude Include="lde.hpp" />
     <ClInclude Include="main.hpp" />
     <ClInclude Include="memory.hpp" />
-    <ClInclude Include="native.hpp" />
     <ClInclude Include="native_enum.hpp" />
     <ClInclude Include="native_struct.hpp" />
     <ClInclude Include="native_struct10.hpp" />

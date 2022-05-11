@@ -6,25 +6,33 @@
 #include <memory>
 #include <coroutine>
 #include <chrono>
+#include <unordered_set>
+#include "util.hpp"
 
 using namespace std::chrono_literals;
 
 namespace concurrent
 {
-
 	class thread
 	{
 	public:
 		using native_handle_type = HANDLE;
 	private:
 		native_handle_type _native_handle;
+		static inline std::unordered_set<HANDLE>* launched_threads;
+
+		inline void destroy(const concurrent::thread& thread) noexcept { launched_threads->erase(thread.native_handle()); }
 
 		template <typename tuple_t, size_t... indices>
 		static void __stdcall invoke(void* argument) noexcept
 		{
+			HANDLE handle{};
+			if (NT_SUCCESS(ObOpenObjectByPointer(PsGetCurrentThread(), OBJ_KERNEL_HANDLE, nullptr, THREAD_ALERT, *PsThreadType, MODE::KernelMode,
+				&handle))) { launched_threads->emplace(handle); }
 			const std::unique_ptr<tuple_t> function(static_cast<tuple_t*>(argument));
 			auto& tuple{ *function };
 			std::invoke(std::move(std::get<indices>(tuple))...);
+			if (handle) { launched_threads->erase(handle); }
 			PsTerminateSystemThread(STATUS_SUCCESS);
 		}
 
@@ -46,10 +54,13 @@ namespace concurrent
 			PsCreateSystemThread(&_native_handle, THREAD_ALL_ACCESS, &attribute, nullptr, nullptr, invoker, deacy_copied.get());
 		}
 	public:
+		static inline void initialize() { launched_threads = new std::unordered_set<HANDLE>(); }
+		inline static void join_all() noexcept { for (auto&& thread : *launched_threads) { ZwWaitForSingleObject(thread, false, nullptr); } }
+
 		template <class function, class... args, std::enable_if_t<!std::is_same_v<std::_Remove_cvref_t<function>, thread>, int> = 0>
 		[[nodiscard]] inline explicit thread(function&& _Fx, args&&... _Ax) { start(std::forward<function>(_Fx), std::forward<args>(_Ax)...); }
 
-		[[nodiscard]] inline bool joinable() { return _native_handle; }
+		[[nodiscard]] inline bool joinable() { return  _native_handle; }
 
 		void join()
 		{
@@ -76,8 +87,10 @@ namespace concurrent
 		thread(const thread&) = delete;
 		thread& operator=(const thread&) = delete;
 		inline void swap(thread& _Other) noexcept { std::swap(_native_handle, _Other._native_handle); }
-		inline native_handle_type native_handle() noexcept { return _native_handle; }
+		inline native_handle_type native_handle() const noexcept { return _native_handle; }
 	};
+
+	inline NTSTATUS exit_thread() { return PsTerminateSystemThread(STATUS_SUCCESS); }
 
 	template <class rep, class period>
 	NTSTATUS sleep_for(const std::chrono::duration<rep, period>& duration)
@@ -85,7 +98,6 @@ namespace concurrent
 		auto nanoseconds{ std::chrono::duration_cast<std::chrono::nanoseconds>(duration) };
 		LARGE_INTEGER kernel_duration{};
 		kernel_duration.QuadPart = -nanoseconds.count() / 100;
-		std::atomic<int>::store();
 		return KeDelayExecutionThread(MODE::KernelMode, false, &kernel_duration);
 	}
 
@@ -143,7 +155,7 @@ namespace concurrent
 		static_assert(sizeof T == sizeof(short) || sizeof T == sizeof(int) || sizeof T == sizeof(__int64),
 			"Unsupported size.");
 
-		if constexpr (sizeof T == 2) { return _InterlockedIncrement16(reinterpret_cast<volatile short*>(target)); } 
+		if constexpr (sizeof T == 2) { return _InterlockedIncrement16(reinterpret_cast<volatile short*>(target)); }
 		else if constexpr (sizeof T == 4) { return _InterlockedIncrement(reinterpret_cast<volatile long*>(target)); }
 		else if constexpr (sizeof T == 8) { return _InterlockedIncrement64(reinterpret_cast<volatile __int64*>(target)); }
 	}

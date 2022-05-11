@@ -50,7 +50,7 @@ namespace com {
 
 				KIRQL irql{};
 				if (disable_protection) {
-					irql = memory::enable_interrupt();
+					irql = memory::disable_interrupt();
 				}
 
 				NTSTATUS status{};
@@ -101,7 +101,7 @@ namespace com {
 							break;
 					}
 
-					if (disable_protection) memory::disable_interrupt(irql);
+					if (disable_protection) memory::enable_interrupt(irql);
 					return status;
 			});
 			

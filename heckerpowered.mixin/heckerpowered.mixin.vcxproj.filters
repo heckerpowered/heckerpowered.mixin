@@ -19,23 +19,14 @@
     <Filter Include="files\util">
       <UniqueIdentifier>{2560c0e2-daf0-4c6c-8711-515359ea3e17}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\util\process">
-      <UniqueIdentifier>{722b03d1-078c-4380-878a-927ab5d4bad0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\memory">
       <UniqueIdentifier>{35858373-3879-42e8-80ad-6b46b1e1caa0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\thread">
-      <UniqueIdentifier>{77c3a989-86f4-4efa-9c34-c5ff0d427978}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\feature\callback\object">
       <UniqueIdentifier>{fdc29311-e0b1-4599-ab89-256f047f9ebb}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\feature\callback\process">
       <UniqueIdentifier>{9ee2695b-9efc-4776-a7e5-2ca5e1cb06fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\handle">
-      <UniqueIdentifier>{b38b7d7d-643a-45e7-9425-6e08f239db5a}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\lib">
       <UniqueIdentifier>{c8c24acf-150e-4ab4-b6c9-0f12d961b6ff}</UniqueIdentifier>
@@ -49,9 +40,6 @@
     <Filter Include="files\feature\callback\filter">
       <UniqueIdentifier>{38b4736d-a485-43b1-b89d-61d904963b36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\util\file">
-      <UniqueIdentifier>{59f51180-fcf2-4be8-baa2-85ffab691c23}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\native">
       <UniqueIdentifier>{62e281c2-7719-4da8-bc66-d4dcb1e2283f}</UniqueIdentifier>
     </Filter>
@@ -60,9 +48,6 @@
     </Filter>
     <Filter Include="files\feature\hook\inline_hook">
       <UniqueIdentifier>{49f4220a-5459-49d5-a61d-738547818ff9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\ssdt">
-      <UniqueIdentifier>{9348be8e-f9d4-42e3-aa2d-5c0e284bc312}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\feature\callback\image">
       <UniqueIdentifier>{96118188-0dfd-4076-aebb-d39f46d011ce}</UniqueIdentifier>
@@ -124,11 +109,32 @@
     <Filter Include="files\util\native\compatibility\native\native_struct">
       <UniqueIdentifier>{134e57e3-c509-4f28-b608-7ab9084a2de9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\util\native\assembly">
-      <UniqueIdentifier>{e2b19b34-ec43-4dd0-89d2-6de2e5ce57b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\core">
       <UniqueIdentifier>{cb621a83-9d2c-4bc3-880d-a2388163516a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\core\string">
+      <UniqueIdentifier>{ae7f43e4-9320-4297-b9a9-27af95528d33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\core\secure">
+      <UniqueIdentifier>{6327ed74-41ed-478f-8326-6adda783975f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\core\secure\crc32">
+      <UniqueIdentifier>{710f116e-d590-4228-9bd4-2b01e393a2a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\native\process">
+      <UniqueIdentifier>{722b03d1-078c-4380-878a-927ab5d4bad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\native\ssdt">
+      <UniqueIdentifier>{9348be8e-f9d4-42e3-aa2d-5c0e284bc312}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\native\thread">
+      <UniqueIdentifier>{77c3a989-86f4-4efa-9c34-c5ff0d427978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\native\file">
+      <UniqueIdentifier>{59f51180-fcf2-4be8-baa2-85ffab691c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\native\handle">
+      <UniqueIdentifier>{b38b7d7d-643a-45e7-9425-6e08f239db5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +145,7 @@
       <Filter>files\util\extern</Filter>
     </ClCompile>
     <ClCompile Include="process.cpp">
-      <Filter>files\util\process</Filter>
+      <Filter>files\util\native\process</Filter>
     </ClCompile>
     <ClCompile Include="memory.cpp">
       <Filter>files\util\memory</Filter>
@@ -151,7 +157,7 @@
       <Filter>files\util</Filter>
     </ClCompile>
     <ClCompile Include="thread.cpp">
-      <Filter>files\util\thread</Filter>
+      <Filter>files\util\native\thread</Filter>
     </ClCompile>
     <ClCompile Include="object_callback.cpp">
       <Filter>files\feature\callback\object</Filter>
@@ -160,7 +166,7 @@
       <Filter>files\feature\callback\process</Filter>
     </ClCompile>
     <ClCompile Include="handle.cpp">
-      <Filter>files\util\handle</Filter>
+      <Filter>files\util\native\handle</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>files</Filter>
@@ -178,10 +184,7 @@
       <Filter>files\feature\callback\filter</Filter>
     </ClCompile>
     <ClCompile Include="file.cpp">
-      <Filter>files\util\file</Filter>
-    </ClCompile>
-    <ClCompile Include="native.cpp">
-      <Filter>files\util\native</Filter>
+      <Filter>files\util\native\file</Filter>
     </ClCompile>
     <ClCompile Include="extern.cpp">
       <Filter>files\util\extern</Filter>
@@ -196,16 +199,13 @@
       <Filter>files\feature\hook\inline_hook</Filter>
     </ClCompile>
     <ClCompile Include="ssdt.cpp">
-      <Filter>files\util\ssdt</Filter>
+      <Filter>files\util\native\ssdt</Filter>
     </ClCompile>
     <ClCompile Include="image_callback.cpp">
       <Filter>files\feature\callback\image</Filter>
     </ClCompile>
     <ClCompile Include="system.cpp">
       <Filter>files\util\system</Filter>
-    </ClCompile>
-    <ClCompile Include="assembly.cpp">
-      <Filter>files\util\native\assembly</Filter>
     </ClCompile>
     <ClCompile Include="concurrent.cpp">
       <Filter>files\util\concurrent</Filter>
@@ -231,11 +231,17 @@
     <ClCompile Include="io.cpp">
       <Filter>files\util\io</Filter>
     </ClCompile>
-    <ClCompile Include="string_literap.cpp">
+    <ClCompile Include="core.cpp">
       <Filter>files\util\core</Filter>
     </ClCompile>
+    <ClCompile Include="string_literap.cpp">
+      <Filter>files\util\core\string</Filter>
+    </ClCompile>
     <ClCompile Include="string_builder.cpp">
-      <Filter>files\util\core</Filter>
+      <Filter>files\util\core\string</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32.cpp">
+      <Filter>files\util\core\secure\crc32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,7 +255,7 @@
       <Filter>files\feature\communication</Filter>
     </ClInclude>
     <ClInclude Include="process.hpp">
-      <Filter>files\util\process</Filter>
+      <Filter>files\util\native\process</Filter>
     </ClInclude>
     <ClInclude Include="procedure.hpp">
       <Filter>files\util\extern</Filter>
@@ -264,7 +270,7 @@
       <Filter>files\util</Filter>
     </ClInclude>
     <ClInclude Include="thread.hpp">
-      <Filter>files\util\thread</Filter>
+      <Filter>files\util\native\thread</Filter>
     </ClInclude>
     <ClInclude Include="object_callback.hpp">
       <Filter>files\feature\callback\object</Filter>
@@ -273,7 +279,7 @@
       <Filter>files\feature\callback\process</Filter>
     </ClInclude>
     <ClInclude Include="handle.hpp">
-      <Filter>files\util\handle</Filter>
+      <Filter>files\util\native\handle</Filter>
     </ClInclude>
     <ClInclude Include="compatibility.hpp">
       <Filter>files\util\native\compatibility</Filter>
@@ -327,10 +333,7 @@
       <Filter>files\util\native\compatibility\native\native_struct</Filter>
     </ClInclude>
     <ClInclude Include="file.hpp">
-      <Filter>files\util\file</Filter>
-    </ClInclude>
-    <ClInclude Include="native.hpp">
-      <Filter>files\util\native</Filter>
+      <Filter>files\util\native\file</Filter>
     </ClInclude>
     <ClInclude Include="patch_guard.hpp">
       <Filter>files\util\patch_guard</Filter>
@@ -342,16 +345,13 @@
       <Filter>files\feature\hook\inline_hook</Filter>
     </ClInclude>
     <ClInclude Include="ssdt.hpp">
-      <Filter>files\util\ssdt</Filter>
+      <Filter>files\util\native\ssdt</Filter>
     </ClInclude>
     <ClInclude Include="image_callback.hpp">
       <Filter>files\feature\callback\image</Filter>
     </ClInclude>
     <ClInclude Include="system.hpp">
       <Filter>files\util\system</Filter>
-    </ClInclude>
-    <ClInclude Include="assembly.hpp">
-      <Filter>files\util\native\assembly</Filter>
     </ClInclude>
     <ClInclude Include="concurrent.hpp">
       <Filter>files\util\concurrent</Filter>
@@ -386,11 +386,17 @@
     <ClInclude Include="io.hpp">
       <Filter>files\util\io</Filter>
     </ClInclude>
-    <ClInclude Include="string_literal.hpp">
+    <ClInclude Include="core.hpp">
       <Filter>files\util\core</Filter>
     </ClInclude>
+    <ClInclude Include="string_literal.hpp">
+      <Filter>files\util\core\string</Filter>
+    </ClInclude>
     <ClInclude Include="string_builder.hpp">
-      <Filter>files\util\core</Filter>
+      <Filter>files\util\core\string</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32.hpp">
+      <Filter>files\util\core\secure\crc32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,16 @@
 #include "main.hpp"
 
+namespace mixin
+{
+	struct _DRIVER_OBJECT* driver_object;
+	static inline std::atomic<bool> unloading;
+
+	bool is_being_unloaded()
+	{
+		return unloading;
+	}
+}
+
 extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_STRING registery_path [[maybe_unused]] )
 {
 	NTSTATUS status{ STATUS_SUCCESS };
@@ -13,6 +24,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	if (!NT_SUCCESS(status)) return status;
 
 	guard::initialize();
+	concurrent::thread::initialize();
 
 	static UNICODE_STRING device_name RTL_CONSTANT_STRING(L"\\Device\\Mixin");
 	static UNICODE_STRING symbolic_link_name RTL_CONSTANT_STRING(L"\\??\\Mixin");
@@ -46,6 +58,10 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 
 	driver_object->DriverUnload = [](auto driver_object)
 	{
+		mixin::unloading = true;
+		concurrent::thread::join_all();
+
+		k_hook::stop();
 		callback::unregister_callbacks();
 		callback::process::unregister_callbacks();
 		callback::image::unregister_callbacks();
@@ -70,8 +86,6 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 		// "delete pending" and deletes the device object when the references are released.
 		auto device = driver_object->DeviceObject;
 		if (device) IoDeleteDevice(device);
-
-		k_hook::stop();
 	};
 
 	// The _Dispatch_type_ annotations does not seem to be detected on Lambda expressions
@@ -299,9 +313,4 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	device->Flags &= ~DO_DEVICE_INITIALIZING;
 
 	return status;
-}
-
-namespace mixin
-{
-	struct _DRIVER_OBJECT* driver_object;
 }

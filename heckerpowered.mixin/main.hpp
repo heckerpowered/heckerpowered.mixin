@@ -10,12 +10,12 @@
 #include "headers.hpp"
 #include "infinity_hook.hpp"
 #include "inline_hook.hpp"
-#include "module.hpp"
 #include "patch_guard.hpp"
 #include "image_callback.hpp"
 #include "system.hpp"
 #include "concurrent.hpp"
 #include "string_literal.hpp"
+#include "crc32.hpp"
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
 
@@ -48,4 +48,5 @@ typedef struct _LDR_DATA_TABLE_ENTRY64
 namespace mixin
 {
 	extern struct _DRIVER_OBJECT* driver_object;
+	bool is_being_unloaded();
 }

@@ -204,18 +204,20 @@ namespace memory
 	}
 
 	#pragma warning(disable: 28167)
-	void disable_interrupt(KIRQL irql) noexcept
+	void enable_interrupt(KIRQL irql) noexcept
 	{
 		auto cr0 = __readcr0();
 		cr0 |= 0x10000;
 		_enable();
 		__writecr0(cr0);
 		KeLowerIrql(irql);
+		KeLeaveGuardedRegion();
 	}
 
-	KIRQL enable_interrupt() noexcept
+	KIRQL disable_interrupt() noexcept
 	{
-		const auto irql = KeRaiseIrqlToDpcLevel();
+		KeEnterGuardedRegion();
+		const auto irql = KfRaiseIrql(HIGH_LEVEL);
 		auto cr0 = __readcr0();
 		cr0 &= ~(1 << 16);
 		__writecr0(cr0);

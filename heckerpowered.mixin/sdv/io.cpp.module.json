@@ -1,0 +1,9 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "e:\\repos\\vs\\heckerpowered.mixin\\heckerpowered.mixin\\io.cpp",
+        "ProvidedModule": "",
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

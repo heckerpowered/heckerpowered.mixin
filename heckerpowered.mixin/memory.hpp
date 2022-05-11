@@ -28,8 +28,8 @@ namespace memory {
 	NTSTATUS read_mdl_memory(void* destination, void* source, unsigned long size) noexcept;
 
 	void free(void* address) noexcept;
-	void disable_interrupt(KIRQL irql) noexcept;
-	KIRQL enable_interrupt() noexcept;
+	void enable_interrupt(KIRQL irql) noexcept;
+	KIRQL disable_interrupt() noexcept;
 
 	void* allocate_contiguous(std::size_t size, bool zero = true) noexcept;
 	void free_contiguous(void* address) noexcept;

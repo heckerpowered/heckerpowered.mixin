@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin\</FILEPATH>
+      <FILENAME>main.cpp</FILENAME>
+      <LINE>141</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>26496</DEFECTCODE>
+    <DESCRIPTION>The variable 'code' does not change after construction, mark it as const (con.4).</DESCRIPTION>
+    <FUNCTION>DriverEntry::&lt;lambda_3&gt;::()</FUNCTION>
+    <DECORATED>??$?RPEAU_DEVICE_OBJECT@@PEAU_IRP@@@&lt;lambda_3&gt;@?1??DriverEntry@@YAJPEAU_DRIVER_OBJECT@@PEAU_UNICODE_STRING@@@Z@QEBA?A_PPEAU_DEVICE_OBJECT@@PEAU_IRP@@@Z</DECORATED>
+    <FUNCLINE>222</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin\</FILEPATH>
+      <FILENAME>main.cpp</FILENAME>
+      <LINE>142</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>26496</DEFECTCODE>
+    <DESCRIPTION>The variable 'length' does not change after construction, mark it as const (con.4).</DESCRIPTION>
+    <FUNCTION>DriverEntry::&lt;lambda_3&gt;::()</FUNCTION>
+    <DECORATED>??$?RPEAU_DEVICE_OBJECT@@PEAU_IRP@@@&lt;lambda_3&gt;@?1??DriverEntry@@YAJPEAU_DRIVER_OBJECT@@PEAU_UNICODE_STRING@@@Z@QEBA?A_PPEAU_DEVICE_OBJECT@@PEAU_IRP@@@Z</DECORATED>
+    <FUNCLINE>222</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin\</FILEPATH>
+      <FILENAME>main.cpp</FILENAME>
+      <LINE>143</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>26496</DEFECTCODE>
+    <DESCRIPTION>The variable 'method' does not change after construction, mark it as const (con.4).</DESCRIPTION>
+    <FUNCTION>DriverEntry::&lt;lambda_3&gt;::()</FUNCTION>
+    <DECORATED>??$?RPEAU_DEVICE_OBJECT@@PEAU_IRP@@@&lt;lambda_3&gt;@?1??DriverEntry@@YAJPEAU_DRIVER_OBJECT@@PEAU_UNICODE_STRING@@@Z@QEBA?A_PPEAU_DEVICE_OBJECT@@PEAU_IRP@@@Z</DECORATED>
+    <FUNCLINE>222</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin\</FILEPATH>
+      <FILENAME>main.cpp</FILENAME>
+      <LINE>300</LINE>
+      <COLUMN>6</COLUMN>
+    </SFA>
+    <DEFECTCODE>26496</DEFECTCODE>
+    <DESCRIPTION>The variable 'irql' does not change after construction, mark it as const (con.4).</DESCRIPTION>
+    <FUNCTION>DriverEntry</FUNCTION>
+    <DECORATED>DriverEntry</DECORATED>
+    <FUNCLINE>3</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin\</FILEPATH>
+      <FILENAME>memory.hpp</FILENAME>
+      <LINE>49</LINE>
+      <COLUMN>39</COLUMN>
+    </SFA>
+    <DEFECTCODE>26496</DEFECTCODE>
+    <DESCRIPTION>The variable 'list' does not change after construction, mark it as const (con.4).</DESCRIPTION>
+    <FUNCTION>memory::execute</FUNCTION>
+    <DECORATED>??$execute@$0GG@$0LI@$00$0CA@$0GG@$0LK@$03$0BA@$0GG@$0OP@$0MD@@memory@@YAXXZ</DECORATED>
+    <FUNCLINE>47</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Repos\VS\heckerpowered.mixin\heckerpowered.mixin\</FILEPATH>
+      <FILENAME>memory.hpp</FILENAME>
+      <LINE>49</LINE>
+      <COLUMN>39</COLUMN>
+    </SFA>
+    <DEFECTCODE>26496</DEFECTCODE>
+    <DESCRIPTION>The variable 'list' does not change after construction, mark it as const (con.4).</DESCRIPTION>
+    <FUNCTION>memory::execute</FUNCTION>
+    <DECORATED>??$execute@$0LA@$0PO@$0OG@$0GE@$0MD@@memory@@YAXXZ</DECORATED>
+    <FUNCLINE>47</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

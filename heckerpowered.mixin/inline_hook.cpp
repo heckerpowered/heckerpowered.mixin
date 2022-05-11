@@ -27,9 +27,9 @@ namespace hook::inline_hook
 	{
 		patch_size = get_patch_size(reinterpret_cast<unsigned char*>(victim));
 		auto original_header{ memory::allocate(patch_size) };
-		auto irql{ memory::enable_interrupt() };
+		auto irql{ memory::disable_interrupt() };
 		memcpy(original_header, victim, patch_size);
-		memory::disable_interrupt(irql);
+		memory::enable_interrupt(irql);
 
 		auto original_function{ memory::allocate(patch_size + 14) };
 		memset(original_function, 0x90, patch_size + 14);
@@ -46,18 +46,18 @@ namespace hook::inline_hook
 		begin = reinterpret_cast<unsigned __int64>(target);
 		memcpy(jmp_code + 6, &begin, sizeof(begin));
 
-		irql = memory::enable_interrupt();
+		irql = memory::disable_interrupt();
 		memset(victim, 0x90, patch_size);
 		memcpy(victim, jmp_code, 14);
-		memory::disable_interrupt(irql);
+		memory::enable_interrupt(irql);
 		return original_header;
 	}
 
 	void unhook_internal(void* victim, void* original, std::size_t patch_size)
 	{
-		auto irql{ memory::enable_interrupt() };
+		auto irql{ memory::disable_interrupt() };
 		memcpy(victim, original, patch_size);
-		memory::disable_interrupt(irql);
+		memory::enable_interrupt(irql);
 	}
 
 	void uninstall_hooks() noexcept
