@@ -1,4 +1,4 @@
-#include "crc32.hpp"
+#include "pch.hpp"
 
 namespace crc32
 {

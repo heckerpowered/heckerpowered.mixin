@@ -3,25 +3,23 @@
 
 #pragma warning(disable : 4201)
 
-#ifndef _DEBUG
-#define DbgPrintEx(ComponentId,Level,Format,...)
-#endif // !_DEBUG
-
-
 /*
 *   https://docs.microsoft.com/en-us/windows/win32/etw/wnode-header*/
 typedef struct _WNODE_HEADER
 {
 	ULONG BufferSize;
 	ULONG ProviderId;
-	union {
+	union
+	{
 		ULONG64 HistoricalContext;
-		struct {
+		struct
+		{
 			ULONG Version;
 			ULONG Linkage;
 		};
 	};
-	union {
+	union
+	{
 		HANDLE KernelHandle;
 		LARGE_INTEGER TimeStamp;
 	};
@@ -42,7 +40,8 @@ typedef struct _EVENT_TRACE_PROPERTIES
 	ULONG LogFileMode;
 	ULONG FlushTimer;
 	ULONG EnableFlags;
-	union {
+	union
+	{
 		LONG AgeLimit;
 		LONG FlushThreshold;
 	} DUMMYUNIONNAME;
@@ -101,7 +100,7 @@ namespace k_hook
 		constexpr const unsigned long tag = 'VMON';
 
 		// 申请结构体空间
-		CKCL_TRACE_PROPERTIES* property = (CKCL_TRACE_PROPERTIES*)ExAllocatePoolWithTag(NonPagedPool, PAGE_SIZE, tag);
+		CKCL_TRACE_PROPERTIES* property = (CKCL_TRACE_PROPERTIES*)ExAllocatePool2(POOL_FLAG_NON_PAGED, PAGE_SIZE, tag);
 		if (!property)
 		{
 			DbgPrintEx(0, 0, "[%s] allocate ckcl trace propertice struct fail \n", __FUNCTION__);
@@ -109,7 +108,7 @@ namespace k_hook
 		}
 
 		// 申请保存名称的空间
-		wchar_t* provider_name = (wchar_t*)ExAllocatePoolWithTag(NonPagedPool, 256 * sizeof(wchar_t), tag);
+		wchar_t* provider_name = (wchar_t*)ExAllocatePool2(POOL_FLAG_NON_PAGED, 256 * sizeof(wchar_t), tag);
 		if (!provider_name)
 		{
 			DbgPrintEx(0, 0, "[%s] allocate provider name fail \n", __FUNCTION__);
@@ -172,10 +171,10 @@ namespace k_hook
 			*   mov [rsp+48h+var_20], 501802h
 			*   mov r9d, 0F33h
 			*/
-#define INFINITYHOOK_MAGIC_1 ((unsigned long)0x501802)
-#define INFINITYHOOK_MAGIC_2 ((unsigned short)0xF33)
+			#define INFINITYHOOK_MAGIC_1 ((unsigned long)0x501802)
+			#define INFINITYHOOK_MAGIC_2 ((unsigned short)0xF33)
 
-			// 第一个特征值检查
+						// 第一个特征值检查
 			unsigned long* l_value = (unsigned long*)stack_current;
 			if (*l_value != INFINITYHOOK_MAGIC_1) continue;
 

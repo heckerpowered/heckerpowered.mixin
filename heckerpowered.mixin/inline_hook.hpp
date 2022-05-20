@@ -1,9 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <unordered_map>
-#include <functional>
-#include "memory.hpp"
-#include "lde.hpp"
 
 namespace hook::inline_hook {
 	void initialize() noexcept;

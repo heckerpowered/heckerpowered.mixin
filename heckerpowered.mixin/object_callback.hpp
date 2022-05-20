@@ -1,10 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <vector>
-#include <string>
-#include "process_guard.hpp"
-#include "extern.hpp"
-#include "thread.hpp"
 
 namespace callback {
 	NTSTATUS register_callback(POBJECT_TYPE * type, POB_PRE_OPERATION_CALLBACK pre, POB_POST_OPERATION_CALLBACK post = nullptr, OB_OPERATION operation_type =

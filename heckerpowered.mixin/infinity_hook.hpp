@@ -1,11 +1,5 @@
 #pragma once
 
-#include "kernel_stl.hpp"
-#include <unordered_map>
-#include "hook.hpp"
-#include "procedure.hpp"
-#include "ssdt.hpp"
-
 namespace hook::infinity_hook
 {
 	NTSTATUS initialize();

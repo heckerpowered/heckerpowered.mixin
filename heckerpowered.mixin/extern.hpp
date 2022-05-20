@@ -1,9 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <ntimage.h>
-#include "compatibility.hpp"
-#include "util.hpp"
-#include "native_struct.hpp"
 
 extern "C" {
     char* NTAPI

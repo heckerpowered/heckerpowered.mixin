@@ -1,4 +1,5 @@
 #pragma once
+#pragma system_header
 #include "headers.hpp"
 
 namespace k_hook

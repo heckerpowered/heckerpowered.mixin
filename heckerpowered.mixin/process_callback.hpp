@@ -1,11 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <set>
-#include <string>
-#include <deque>
-
-#include "process_guard.hpp"
-#include "process.hpp"
 
 namespace callback::process {
 
@@ -17,8 +10,6 @@ namespace callback::process {
 			HANDLE thread_id;
 		} creating;
 	};
-
-	extern std::deque<process_info> created_processes;
 
 	NTSTATUS register_callbacks() noexcept;
 	NTSTATUS unregister_callbacks() noexcept;

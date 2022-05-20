@@ -1,8 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <vector>
-#include "thread.hpp"
-#include "native_struct.hpp"
 
 #define MM_ZERO_ACCESS         0
 #define MM_READONLY            1
@@ -171,7 +167,6 @@ namespace compatibility {
     NTSTATUS initialize_dynamic_data() noexcept;
 
     NTSTATUS set_debug_port(PEPROCESS process, unsigned __int64 value);
-    NTSTATUS set_accessible(PEPROCESS process, bool accessible);
     NTSTATUS set_system_thread(PETHREAD thread, bool is_system_thread);
     const dynamic_data& get_data();
 }

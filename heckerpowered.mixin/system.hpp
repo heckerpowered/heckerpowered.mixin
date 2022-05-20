@@ -1,11 +1,9 @@
 #pragma once
-#include "memory.hpp"
 
 namespace sys
 {
 	inline void shutdown() noexcept
 	{
-
 		// mov ax, 2001
 		// mov dx, 1004
 		// out dx, ax

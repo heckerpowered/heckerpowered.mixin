@@ -1,7 +1,18 @@
-#include "communication.hpp"
+#include "pch.hpp"
 
 namespace com {
 	std::unordered_map<unsigned int, request_handler>* request_handlers;
+
+	template<>
+	void register_request_handler<void>(unsigned int code, std::function<NTSTATUS(request<void>)> handler)
+	{
+		auto request_handler = [=](unsigned int length [[maybe_unused]], void* input_buffer [[maybe_unused]], void* out_buffer)
+		{
+			return handler(request<void>(out_buffer));
+		};
+		
+		request_handlers->emplace(code, request_handler);
+	}
 
 	NTSTATUS handle_request(unsigned int code, unsigned int length, void* input_buffer, void* out_buffer) noexcept {
 		__try {
@@ -15,15 +26,6 @@ namespace com {
 		__except (EXCEPTION_EXECUTE_HANDLER) {
 			return _exception_code();
 		}
-	}
-
-	template<>
-	void register_request_handler<void>(unsigned int code, std::function<NTSTATUS(request<void>)> handler) {
-		auto request_handler = [=](unsigned int length [[maybe_unused]], void* input_buffer [[maybe_unused]], void* out_buffer) {
-			return handler(request<void>(out_buffer));
-		};
-
-		request_handlers->emplace(code, request_handler);
 	}
 
 	NTSTATUS initialize_requests() noexcept {

@@ -1,11 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <vector>
-#include <string>
-#include "extern.hpp"
-#include "lde.hpp"
-
-#define println(format, ...) DbgPrintEx(DPFLTR_TYPE::DPFLTR_IHVDRIVER_ID,DPFLTR_ERROR_LEVEL,"[Mixins]: " format "\n",##__VA_ARGS__)
 
 namespace util
 {

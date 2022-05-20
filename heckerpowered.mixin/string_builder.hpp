@@ -1,11 +1,15 @@
 #pragma once
-#include <string>
-#include <memory>
-#include <algorithm>
-#include <numeric>
 
 namespace core
 {
-	std::string connect(std::initializer_list<std::string>&& v) noexcept;
-	std::wstring connect(std::initializer_list<std::wstring>&& v) noexcept;
+	template<character char_type = char, typename...args_t>
+	std::basic_string<char_type> connect(const args_t&... v)
+	{
+		std::basic_string<char_type> buffer;
+		std::size_t length{};
+		((length += std::basic_string_view<char_type>(v).size()), ...);
+		buffer.reserve(length);
+		((buffer += std::basic_string_view<char_type>(v)), ...);
+		return buffer;
+	}
 }

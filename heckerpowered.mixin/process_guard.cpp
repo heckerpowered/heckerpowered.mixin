@@ -1,4 +1,4 @@
-#include "process_guard.hpp"
+#include "pch.hpp"
 
 namespace guard
 {
@@ -477,7 +477,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 

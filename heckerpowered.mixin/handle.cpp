@@ -1,4 +1,4 @@
-#include "handle.hpp"
+#include "pch.hpp"
 
 namespace handle {
 	PHANDLE_TABLE_ENTRY exp_lookup_handle_table_entry(PHANDLE_TABLE handle_table, EXHANDLE handle) noexcept

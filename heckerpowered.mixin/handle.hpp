@@ -1,7 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include "compatibility.hpp"
-#include "extern.hpp"
 
 #define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
 #define KERNEL_HANDLE_MASK ((ULONG_PTR)((LONG)0x80000000))

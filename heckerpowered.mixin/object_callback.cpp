@@ -1,4 +1,4 @@
-#include "object_callback.hpp"
+#include "pch.hpp"
 
 namespace callback {
 	std::vector<void*> callbacks;
@@ -60,6 +60,7 @@ namespace callback {
 				zero_handle_access(operation_information);
 			}
 
+			
 			return OB_PREOP_CALLBACK_STATUS::OB_PREOP_SUCCESS;
 		});
 		if (!NT_SUCCESS(status)) { return status; }

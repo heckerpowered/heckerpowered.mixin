@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "pch.hpp"
 
 namespace mixin
 {
@@ -18,13 +18,25 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	mixin::driver_object = driver_object;
 
 	status = compatibility::initialize_dynamic_data();
-	if (!NT_SUCCESS(status)) return status;
+	if (!NT_SUCCESS(status)) 
+	{
+		io::println("Failed to initialize dynamic data.");
+		return status;
+	}
+
+	io::println("Dynamic data initialized successfully.");
 
 	status = hook::infinity_hook::initialize();
-	if (!NT_SUCCESS(status)) return status;
+	if (!NT_SUCCESS(status)) 
+	{ 
+		io::println("Failed to initialize infinity hook.");
+		return status;
+	}
 
 	guard::initialize();
 	concurrent::thread::initialize();
+
+	io::println("Guard & Thread initialized.");
 
 	static UNICODE_STRING device_name RTL_CONSTANT_STRING(L"\\Device\\Mixin");
 	static UNICODE_STRING symbolic_link_name RTL_CONSTANT_STRING(L"\\??\\Mixin");
@@ -54,7 +66,13 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// If a driver's call to IoCreateDevice returns an error, the driver should release any resources that it allocated for
 	// that device.
 	status = IoCreateDevice(driver_object, 0, &device_name, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, false, &device);
-	if (!NT_SUCCESS(status)) return status;
+	if (!NT_SUCCESS(status)) 
+	{ 
+		io::println("Failed to create device.");
+		return status;
+	}
+
+	io::println("Device created successfully.");
 
 	driver_object->DriverUnload = [](auto driver_object)
 	{
@@ -242,23 +260,44 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	status = IoCreateSymbolicLink(&symbolic_link_name, &device_name);
 	if (!NT_SUCCESS(status))
 	{
+		io::println("Failed to create symbolic link.");
 		IoDeleteDevice(device);
+		io::println("Device deleted.");
 		return status;
 	}
+	
+	io::println("Symbolic link created successfully.");
 
 	// Bypass the special certificate check otherwise the registration object callback will fail
 	#pragma warning(disable: __WARNING_INACCESSIBLE_MEMBER)
 	reinterpret_cast<PLDR_DATA_TABLE_ENTRY64>(driver_object->DriverSection)->Flags |= 0x20;
 	#pragma warning(default: __WARNING_INACCESSIBLE_MEMBER)
 
+	io::println("Special certificate verification bypassed.");
 	status = callback::initialize_callbacks();
-	if (!NT_SUCCESS(status)) return status;
+	if (!NT_SUCCESS(status)) 
+	{ 
+		io::println("Failed to initialized object callbacks.");
+		return status;
+	}
 
+	io::println("Object callbacks initialized successfully.");
 	status = callback::process::register_callbacks();
-	if (!NT_SUCCESS(status)) return status;
+	if (!NT_SUCCESS(status)) 
+	{ 
+		io::println("Failed to initialized process callbacks.");
+		return status;
+	}
 
+	io::println("Process callbacks initialized successfully.");
 	status = com::initialize_requests();
-	if (!NT_SUCCESS(status)) return status;
+	if (!NT_SUCCESS(status)) 
+	{
+		io::println("Failed to initialized requestes.");
+		return status;
+	}
+
+	io::println("Requestes initialized successfully.");
 
 	// DO_BUFFERED_IO or DO_DIRECT_IO
 	// Specifies the type of buffering that is used by the I/O manager for I/O requests that are sent to the device stack.
@@ -311,6 +350,6 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// DriverEntry, because this is done automatically by the I/O Manager. However, your driver should clear this flag on
 	// all other device objects that it creates.
 	device->Flags &= ~DO_DEVICE_INITIALIZING;
-
+	
 	return status;
 }

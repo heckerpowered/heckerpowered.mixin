@@ -1,13 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <xtr1common>
-#include <type_traits>
-#include <tuple>
-#include <memory>
-#include <coroutine>
-#include <chrono>
-#include <unordered_set>
-#include "util.hpp"
 
 using namespace std::chrono_literals;
 
@@ -183,5 +174,31 @@ namespace concurrent
 		else if constexpr (sizeof T == 8) { return _InterlockedExchangeAdd64(reinterpret_cast<volatile char*>(target), static_cast<char>(value)); }
 	}
 
-	void interlocked_copy(void* destination, const void* source, std::size_t length) noexcept;
+	inline void interlocked_copy(void* destination, const void* source, std::size_t length) noexcept
+	{
+		if (destination == nullptr || source == nullptr) { return; }
+
+		auto destination_pointer{ reinterpret_cast<char*>(destination) };
+		auto source_pointer{ reinterpret_cast<const char*>(source) };
+		if (destination_pointer <= source_pointer || destination_pointer >= source_pointer + length)
+		{
+			while (length--)
+			{
+				interlocked_exchange(destination_pointer, *source_pointer);
+				destination_pointer++;
+				source_pointer++;
+			}
+		}
+		else
+		{
+			source_pointer += length - 1;
+			destination_pointer += length - 1;
+			while (length--)
+			{
+				interlocked_exchange(destination_pointer, *source_pointer);
+				destination_pointer--;
+				source_pointer--;
+			}
+		}
+	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "imports.hpp"
-#include "hde64.h"
+#include "hde/hde64.h"
 
 namespace k_utils
 {
@@ -23,11 +23,11 @@ namespace k_utils
 		ZwQuerySystemInformation(11, &length, 0, &length);
 		if (!length) return result;
 
-		constexpr const unsigned long tag = 'VMON';
-		PSYSTEM_MODULE_INFORMATION system_modules = (PSYSTEM_MODULE_INFORMATION)ExAllocatePoolWithTag(NonPagedPool, length, tag);
+		const unsigned long tag = 'VMON';
+		PSYSTEM_MODULE_INFORMATION system_modules = (PSYSTEM_MODULE_INFORMATION)ExAllocatePool2(POOL_FLAG_NON_PAGED, length, tag);
 		if (!system_modules) return result;
 
-		const NTSTATUS status = ZwQuerySystemInformation(11, system_modules, length, 0);
+		NTSTATUS status = ZwQuerySystemInformation(11, system_modules, length, 0);
 		if (NT_SUCCESS(status))
 		{
 			for (unsigned long long i = 0; i < system_modules->ulModuleCount; i++)
@@ -49,7 +49,7 @@ namespace k_utils
 	// 模式匹配
 	bool pattern_check(const char* data, const char* pattern, const char* mask)
 	{
-		const size_t len = strlen(mask);
+		size_t len = strlen(mask);
 
 		for (size_t i = 0; i < len; i++)
 		{
@@ -92,7 +92,7 @@ namespace k_utils
 
 			if (strstr((const char*)p->Name, name))
 			{
-				const unsigned long long result = find_pattern(addr + p->VirtualAddress, p->Misc.VirtualSize, pattern, mask);
+				unsigned long long result = find_pattern(addr + p->VirtualAddress, p->Misc.VirtualSize, pattern, mask);
 				if (result) return result;
 			}
 		}
@@ -138,7 +138,7 @@ namespace k_utils
 
 		// 没有补丁过,直接返回KiSystemCall64就行
 		unsigned long section_size = 0;
-		const unsigned long long KVASCODE = get_image_address(ntoskrnl, "KVASCODE", &section_size);
+		unsigned long long KVASCODE = get_image_address(ntoskrnl, "KVASCODE", &section_size);
 		if (!KVASCODE) return syscall_entry;
 
 		// KiSystemCall64还是在区域内,也是直接返回

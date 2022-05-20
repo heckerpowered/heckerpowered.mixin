@@ -1,12 +1,16 @@
 #pragma once
-#include <ntifs.h>
 
 namespace io
 {
-	template<typename...Args>
-	[[msvc::forceinline]]
-	inline unsigned int print(const char* format, Args const*... args) noexcept
+	template<typename...args_t>
+	inline bool print(const args_t&...args) noexcept
 	{
-		return DbgPrint(format, args...);
+		return DbgPrintEx(DPFLTR_TYPE::DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, core::connect("[Mixins]: ", args...).data());
+	}
+
+	template<typename...args_t>
+	inline bool println(const args_t&...args) noexcept
+	{
+		return DbgPrintEx(DPFLTR_TYPE::DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, core::connect("[Mixins]: ", args..., "\n").data());
 	}
 }

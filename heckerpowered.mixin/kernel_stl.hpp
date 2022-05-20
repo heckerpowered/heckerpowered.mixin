@@ -30,7 +30,7 @@ static constexpr ULONG kKstlpPoolTag = 'LTSK';
 
 DECLSPEC_NORETURN static void KernelStlpRaiseException(
     _In_ ULONG bug_check_code) {
-    KdBreakPoint();
+    __debugbreak();
     #pragma warning(push)
     #pragma warning(disable : 28159)
     KeBugCheck(bug_check_code);
@@ -97,7 +97,7 @@ _IRQL_requires_max_(DISPATCH_LEVEL) inline void* __cdecl operator new(
         size = 1;
     }
 
-    const auto p = ExAllocatePoolWithTag(NonPagedPool, size, kKstlpPoolTag);
+    const auto p = ExAllocatePool2(POOL_FLAG_NON_PAGED, size, kKstlpPoolTag);
     if (!p) {
         KernelStlpRaiseException(MUST_SUCCEED_POOL_EMPTY);
     }
@@ -127,7 +127,7 @@ _IRQL_requires_max_(DISPATCH_LEVEL) inline void* __cdecl operator new[](
         size = 1;
     }
 
-    const auto p = ExAllocatePoolWithTag(NonPagedPool, size, kKstlpPoolTag);
+    const auto p = ExAllocatePool2(POOL_FLAG_NON_PAGED, size, kKstlpPoolTag);
     if (!p) {
         KernelStlpRaiseException(MUST_SUCCEED_POOL_EMPTY);
     }

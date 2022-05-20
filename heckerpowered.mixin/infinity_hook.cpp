@@ -1,4 +1,4 @@
-#include "infinity_hook.hpp"
+#include "pch.hpp"
 
 namespace hook::infinity_hook {
 	std::unordered_map<void*, void*>* hooked_functions;
@@ -16,7 +16,6 @@ namespace hook::infinity_hook {
 	void hook_export(const wchar_t* function_name, void* address) noexcept {
 		auto function = proc::get_kernel_procedure(function_name);
 		if (function == nullptr) {
-			println("[WARNING] Unable to find function \"%ls\"", function_name);
 			return;
 		}
 
@@ -26,7 +25,6 @@ namespace hook::infinity_hook {
 	void hook_ssdt(const char* ssdt_name, void* address) noexcept {
 		const int ssdt_index{ ssdt::get_ssdt_index(ssdt_name) };
 		if (ssdt_index == -1) {
-			println("[WARNING] Unable to find ssdt function \"%s\"", ssdt_name);
 			return;
 		}
 

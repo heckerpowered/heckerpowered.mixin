@@ -1,19 +1,5 @@
 #pragma once
 
-#include <ntifs.h>
-#include "kernel_stl.hpp"
-#include <functional>
-#include <unordered_map>
-#include "process.hpp"
-#include "process_guard.hpp"
-#include "memory.hpp"
-#include "util.hpp"
-#include "thread.hpp"
-#include "process_callback.hpp"
-#include "handle.hpp"
-#include "compatibility.hpp"
-#include "system.hpp"
-
 namespace com {
 	using request_handler = std::function<NTSTATUS(unsigned int, void*, void*)>;
 

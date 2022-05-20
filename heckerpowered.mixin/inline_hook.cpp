@@ -1,4 +1,4 @@
-#include "inline_hook.hpp"
+#include "pch.hpp"
 
 namespace hook::inline_hook
 {

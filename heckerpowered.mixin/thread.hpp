@@ -1,12 +1,5 @@
 #pragma once
 
-#include <ntifs.h>
-#include "procedure.hpp"
-#include "process.hpp"
-#include "memory.hpp"
-#include "native_struct.hpp"
-#include "extern.hpp"
-
 namespace thread
 {
 	using user_thread_routine = NTSTATUS(__stdcall*)(void*);

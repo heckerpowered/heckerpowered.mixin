@@ -1,9 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <vector>
-#include "procedure.hpp"
-#include "memory.hpp"
-#include "extern.hpp"
 
 namespace process
 {

@@ -1,22 +1,5 @@
 #pragma once
 
-#include <ntifs.h>
-#include "kernel_stl.hpp"
-#include "object_callback.hpp"
-#include "communication.hpp"
-#include "process_callback.hpp"
-#include "compatibility.hpp"
-#include "handle.hpp"
-#include "headers.hpp"
-#include "infinity_hook.hpp"
-#include "inline_hook.hpp"
-#include "patch_guard.hpp"
-#include "image_callback.hpp"
-#include "system.hpp"
-#include "concurrent.hpp"
-#include "string_literal.hpp"
-#include "crc32.hpp"
-
 extern "C" DRIVER_INITIALIZE DriverEntry;
 
 typedef struct _LDR_DATA_TABLE_ENTRY64

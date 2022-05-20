@@ -1,7 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <intrin.h>
-#include "process.hpp"
 
 namespace memory {
 	bool should_attach(void* process_id) noexcept;
@@ -34,9 +31,9 @@ namespace memory {
 	void* allocate_contiguous(std::size_t size, bool zero = true) noexcept;
 	void free_contiguous(void* address) noexcept;
 
-	template<POOL_TYPE type = POOL_TYPE::NonPagedPoolExecute> void* allocate(std::size_t size, bool zero = true) noexcept
+	template<POOL_FLAGS flags = POOL_FLAG_NON_PAGED_EXECUTE> void* allocate(std::size_t size, bool zero = true) noexcept
 	{
-		void* address = ExAllocatePoolWithTag(type, size, 'TRC_');
+		void* address = ExAllocatePool2(flags, size, 'TRC_');
 		if (address == nullptr) return nullptr;
 		if (zero) RtlZeroMemory(address, size);
 

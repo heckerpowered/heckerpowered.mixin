@@ -78,6 +78,8 @@
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
+    <VCToolsVersion>
+    </VCToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -126,6 +128,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
@@ -160,6 +163,14 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnableModules>true</EnableModules>
+      <PreprocessorDefinitions>_WIN10_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DriverSign>
@@ -193,12 +204,13 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAs>CompileAsCppModule</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <ExpandAttributedSource>false</ExpandAttributedSource>
       <TranslateIncludes>false</TranslateIncludes>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -233,14 +245,9 @@
   <ItemGroup>
     <ClCompile Include="communication.cpp" />
     <ClCompile Include="compatibility.cpp" />
-    <ClCompile Include="concurrent.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="crc32.cpp" />
-    <ClCompile Include="easy_anti_cheat.cpp" />
-    <ClCompile Include="extended.cpp" />
     <ClCompile Include="extern.cpp" />
-    <ClCompile Include="file.cpp" />
-    <ClCompile Include="filter.cpp" />
     <ClCompile Include="handle.cpp" />
     <ClCompile Include="hde64.cpp" />
     <ClCompile Include="hook.cpp" />
@@ -252,7 +259,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="object_callback.cpp" />
-    <ClCompile Include="patch_guard.cpp" />
     <ClCompile Include="procedure.cpp" />
     <ClCompile Include="process.cpp" />
     <ClCompile Include="process_callback.cpp" />
@@ -264,8 +270,6 @@
     <ClCompile Include="thread.cpp" />
     <ClCompile Include="thread_callback.cpp" />
     <ClCompile Include="util.cpp" />
-    <ClCompile Include="virtualization.cpp" />
-    <ClCompile Include="virtual_hook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="communication.hpp" />
@@ -273,16 +277,11 @@
     <ClInclude Include="concurrent.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="crc32.hpp" />
-    <ClInclude Include="easy_anti_cheat.hpp" />
-    <ClInclude Include="extended.hpp" />
     <ClInclude Include="extern.hpp" />
-    <ClInclude Include="file.hpp" />
-    <ClInclude Include="filter.hpp" />
     <ClInclude Include="handle.hpp" />
     <ClInclude Include="hde64.h" />
     <ClInclude Include="headers.hpp" />
     <ClInclude Include="hook.hpp" />
-    <ClInclude Include="ia32.hpp" />
     <ClInclude Include="image_callback.hpp" />
     <ClInclude Include="imports.hpp" />
     <ClInclude Include="infinity_hook.hpp" />
@@ -300,7 +299,7 @@
     <ClInclude Include="native_sturct8.hpp" />
     <ClInclude Include="nmd_assembly.hpp" />
     <ClInclude Include="object_callback.hpp" />
-    <ClInclude Include="patch_guard.hpp" />
+    <ClInclude Include="pch.hpp" />
     <ClInclude Include="pestructs.hpp" />
     <ClInclude Include="procedure.hpp" />
     <ClInclude Include="process.hpp" />
@@ -316,14 +315,6 @@
     <ClInclude Include="thread_callback.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="utils.hpp" />
-    <ClInclude Include="virtualization.hpp" />
-    <ClInclude Include="virtualization_assembly.hpp" />
-    <ClInclude Include="virtual_hook.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="virtualization_assembly.asm">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

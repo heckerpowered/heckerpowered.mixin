@@ -1,6 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <type_traits>
 
 namespace proc {
 	void* get_kernel_procedure(const wchar_t* system_routine_name) noexcept;

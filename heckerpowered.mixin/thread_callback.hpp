@@ -1,8 +1,4 @@
 #pragma once
-#include <ntifs.h>
-#include <string>
-#include <vector>
-#include <functional>
 
 namespace callback::thread
 {

@@ -37,9 +37,6 @@
     <Filter Include="files\feature\hook">
       <UniqueIdentifier>{6af0dbae-a2f7-4e7a-b09e-02a771ae17bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\feature\callback\filter">
-      <UniqueIdentifier>{38b4736d-a485-43b1-b89d-61d904963b36}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\native">
       <UniqueIdentifier>{62e281c2-7719-4da8-bc66-d4dcb1e2283f}</UniqueIdentifier>
     </Filter>
@@ -58,18 +55,6 @@
     <Filter Include="files\util\concurrent">
       <UniqueIdentifier>{4e38806d-a86d-4ea4-9768-205014e5e90c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="files\feature\cheat">
-      <UniqueIdentifier>{1d76cb7e-b43c-4612-ba5f-630bb94cd114}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\feature\cheat\easy_anti_cheat">
-      <UniqueIdentifier>{d8eef534-18fe-413e-830c-59e1a35d1538}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\patch_guard">
-      <UniqueIdentifier>{26226fb6-a42f-41a3-af15-ad6b76c76598}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\virtualization">
-      <UniqueIdentifier>{89fd8153-383d-41a2-bab1-36c7b04ba3b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="files\util\extern">
       <UniqueIdentifier>{ca740335-0a47-4a4a-9722-e3424ccb44f4}</UniqueIdentifier>
     </Filter>
@@ -78,18 +63,6 @@
     </Filter>
     <Filter Include="files\feature\callback\thread">
       <UniqueIdentifier>{6aa3de3b-ad86-472f-be36-f917cb742b98}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\virtualization\extended">
-      <UniqueIdentifier>{b6032b05-bce1-42ce-a7ab-a5c73be850a6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\virtualization\virtualizer">
-      <UniqueIdentifier>{392d0b44-b028-46d1-8da8-f984f0b215cd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\virtualization\assembly">
-      <UniqueIdentifier>{9e00dae0-7f80-4cff-8370-49d996fa1f37}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\feature\hook\virtual_hook">
-      <UniqueIdentifier>{609403cc-d265-45c1-b89f-72774e403d22}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\lib\lde">
       <UniqueIdentifier>{d24e7330-ca8e-4ad1-bbab-469b59e33079}</UniqueIdentifier>
@@ -129,9 +102,6 @@
     </Filter>
     <Filter Include="files\util\native\thread">
       <UniqueIdentifier>{77c3a989-86f4-4efa-9c34-c5ff0d427978}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="files\util\native\file">
-      <UniqueIdentifier>{59f51180-fcf2-4be8-baa2-85ffab691c23}</UniqueIdentifier>
     </Filter>
     <Filter Include="files\util\native\handle">
       <UniqueIdentifier>{b38b7d7d-643a-45e7-9425-6e08f239db5a}</UniqueIdentifier>
@@ -180,17 +150,8 @@
     <ClCompile Include="hook.cpp">
       <Filter>files\lib\infinity_hook</Filter>
     </ClCompile>
-    <ClCompile Include="filter.cpp">
-      <Filter>files\feature\callback\filter</Filter>
-    </ClCompile>
-    <ClCompile Include="file.cpp">
-      <Filter>files\util\native\file</Filter>
-    </ClCompile>
     <ClCompile Include="extern.cpp">
       <Filter>files\util\extern</Filter>
-    </ClCompile>
-    <ClCompile Include="patch_guard.cpp">
-      <Filter>files\util\patch_guard</Filter>
     </ClCompile>
     <ClCompile Include="infinity_hook.cpp">
       <Filter>files\feature\hook\infinity_hook</Filter>
@@ -207,26 +168,11 @@
     <ClCompile Include="system.cpp">
       <Filter>files\util\system</Filter>
     </ClCompile>
-    <ClCompile Include="concurrent.cpp">
-      <Filter>files\util\concurrent</Filter>
-    </ClCompile>
-    <ClCompile Include="easy_anti_cheat.cpp">
-      <Filter>files\feature\cheat\easy_anti_cheat</Filter>
-    </ClCompile>
     <ClCompile Include="lde.cpp">
       <Filter>files\lib\lde</Filter>
     </ClCompile>
-    <ClCompile Include="virtualization.cpp">
-      <Filter>files\util\virtualization</Filter>
-    </ClCompile>
     <ClCompile Include="thread_callback.cpp">
       <Filter>files\feature\callback\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="extended.cpp">
-      <Filter>files\util\virtualization\extended</Filter>
-    </ClCompile>
-    <ClCompile Include="virtual_hook.cpp">
-      <Filter>files\feature\hook\virtual_hook</Filter>
     </ClCompile>
     <ClCompile Include="io.cpp">
       <Filter>files\util\io</Filter>
@@ -308,9 +254,6 @@
     <ClInclude Include="extern.hpp">
       <Filter>files\util\extern</Filter>
     </ClInclude>
-    <ClInclude Include="filter.hpp">
-      <Filter>files\feature\callback\filter</Filter>
-    </ClInclude>
     <ClInclude Include="pestructs.hpp">
       <Filter>files\util\native\compatibility\native</Filter>
     </ClInclude>
@@ -332,12 +275,6 @@
     <ClInclude Include="native_struct7.hpp">
       <Filter>files\util\native\compatibility\native\native_struct</Filter>
     </ClInclude>
-    <ClInclude Include="file.hpp">
-      <Filter>files\util\native\file</Filter>
-    </ClInclude>
-    <ClInclude Include="patch_guard.hpp">
-      <Filter>files\util\patch_guard</Filter>
-    </ClInclude>
     <ClInclude Include="infinity_hook.hpp">
       <Filter>files\feature\hook\infinity_hook</Filter>
     </ClInclude>
@@ -356,29 +293,11 @@
     <ClInclude Include="concurrent.hpp">
       <Filter>files\util\concurrent</Filter>
     </ClInclude>
-    <ClInclude Include="easy_anti_cheat.hpp">
-      <Filter>files\feature\cheat\easy_anti_cheat</Filter>
-    </ClInclude>
     <ClInclude Include="lde.hpp">
       <Filter>files\lib\lde</Filter>
     </ClInclude>
-    <ClInclude Include="virtualization.hpp">
-      <Filter>files\util\virtualization</Filter>
-    </ClInclude>
     <ClInclude Include="thread_callback.hpp">
       <Filter>files\feature\callback\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="extended.hpp">
-      <Filter>files\util\virtualization\extended</Filter>
-    </ClInclude>
-    <ClInclude Include="ia32.hpp">
-      <Filter>files\util\virtualization\virtualizer</Filter>
-    </ClInclude>
-    <ClInclude Include="virtualization_assembly.hpp">
-      <Filter>files\util\virtualization\assembly</Filter>
-    </ClInclude>
-    <ClInclude Include="virtual_hook.hpp">
-      <Filter>files\feature\hook\virtual_hook</Filter>
     </ClInclude>
     <ClInclude Include="nmd_assembly.hpp">
       <Filter>files\lib\nmd_assembly</Filter>
@@ -398,10 +317,8 @@
     <ClInclude Include="crc32.hpp">
       <Filter>files\util\core\secure\crc32</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="virtualization_assembly.asm">
-      <Filter>files\util\virtualization\assembly</Filter>
-    </MASM>
+    <ClInclude Include="pch.hpp">
+      <Filter>files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
