@@ -17,4 +17,5 @@ namespace handle {
 	NTSTATUS grant_access(PEPROCESS process, unsigned int access, HANDLE handle = INVALID_HANDLE_VALUE) noexcept;
 	NTSTATUS close_handle(PEPROCESS process, HANDLE handle) noexcept;
 	NTSTATUS close_handle_by_id(HANDLE process, HANDLE handle) noexcept;
+	void release_implicit_locks(PHANDLE_TABLE handle_table, PHANDLE_TABLE_ENTRY handle_table_entry) noexcept;
 }

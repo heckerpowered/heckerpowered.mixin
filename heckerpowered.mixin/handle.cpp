@@ -1,6 +1,7 @@
 #include "pch.hpp"
 
-namespace handle {
+namespace handle
+{
 	PHANDLE_TABLE_ENTRY exp_lookup_handle_table_entry(PHANDLE_TABLE handle_table, EXHANDLE handle) noexcept
 	{
 		const auto table_code{ handle_table->TableCode & 3 };
@@ -9,17 +10,21 @@ namespace handle {
 		handle.Value &= 0xFFFFFFFFFFFFFFFC;
 
 		#if defined ( _WIN10_ )
-		if (table_code != 0) {
-			if (table_code == 1) {
+		if (table_code != 0)
+		{
+			if (table_code == 1)
+			{
 				return reinterpret_cast<PHANDLE_TABLE_ENTRY>(
 					*reinterpret_cast<unsigned __int64*>(handle_table->TableCode + 8 * (handle.Value >> 11) - 1) + 4 * (handle.Value & 0x7FC));
 			}
-			else {
+			else
+			{
 				return reinterpret_cast<PHANDLE_TABLE_ENTRY>(*reinterpret_cast<unsigned __int64*>(*reinterpret_cast<unsigned __int64*>(
-						handle_table->TableCode + 8 * (handle.Value >> 21) - 2) + 8 * (handle.Value >> 11 & 0x3FF)) + 4 * (handle.Value & 0x7FC));
+					handle_table->TableCode + 8 * (handle.Value >> 21) - 2) + 8 * (handle.Value >> 11 & 0x3FF)) + 4 * (handle.Value & 0x7FC));
 			}
 		}
-		else {
+		else
+		{
 			return reinterpret_cast<PHANDLE_TABLE_ENTRY>(handle_table->TableCode + 4 * handle.Value);
 		}
 		#elif defined ( _WIN7_ )
@@ -65,12 +70,14 @@ namespace handle {
 		#endif
 	}
 
-	struct handle_enum_parameter {
+	struct handle_enum_parameter
+	{
 		unsigned int access;
 		HANDLE handle;
 	};
 
-	NTSTATUS grant_access(PEPROCESS process, unsigned int access, HANDLE handle /*= INVALID_HANDLE_VALUE */) noexcept {
+	NTSTATUS grant_access(PEPROCESS process, unsigned int access, HANDLE handle /*= INVALID_HANDLE_VALUE */) noexcept
+	{
 		auto object_table{ compatibility::get_data().object_table };
 		if (object_table == 0) { return STATUS_NOT_IMPLEMENTED; }
 
@@ -82,18 +89,24 @@ namespace handle {
 			#if !defined(_WIN7_)
 			PHANDLE_TABLE handle_table,
 			#endif
-			PHANDLE_TABLE_ENTRY handle_table_entry, HANDLE handle [[maybe_unused]], void* enum_parameter) -> BOOLEAN {
+			PHANDLE_TABLE_ENTRY handle_table_entry, HANDLE handle [[maybe_unused]], void* enum_parameter) -> BOOLEAN
+		{
 			bool status{ false };
-			if (enum_parameter != nullptr) {
+			if (enum_parameter != nullptr)
+			{
 				const auto parameter{ *reinterpret_cast<handle_enum_parameter*>(enum_parameter) };
-				if (ExpIsValidObjectEntry(handle_table_entry)) {
-					if (parameter.handle != INVALID_HANDLE_VALUE) {
-						if (parameter.handle == handle) {
+				if (ExpIsValidObjectEntry(handle_table_entry))
+				{
+					if (parameter.handle != INVALID_HANDLE_VALUE)
+					{
+						if (parameter.handle == handle)
+						{
 							handle_table_entry->GrantedAccessBits = parameter.access;
 							status = true;
 						}
 					}
-					else {
+					else
+					{
 						handle_table_entry->GrantedAccessBits = parameter.access;
 					}
 				}
@@ -101,17 +114,34 @@ namespace handle {
 
 			#if !defined(_WIN7_)
 			// Release implicit locks
-			if(handle_table_entry) _InterlockedExchangeAdd8(reinterpret_cast<char*>(&handle_table_entry->VolatileLowValue), 1);  // Set Unlocked flag to 1
+			if (handle_table_entry) _InterlockedExchangeAdd8(reinterpret_cast<char*>(&handle_table_entry->VolatileLowValue), 1);  // Set Unlocked flag to 1
 			if (handle_table != NULL && handle_table->HandleContentionEvent)
 				ExfUnblockPushLock(&handle_table->HandleContentionEvent, NULL);
 			#endif
 
 			return status;
-		}, &parameter, nullptr) && handle != INVALID_HANDLE_VALUE) {
+		}, &parameter, nullptr) && handle != INVALID_HANDLE_VALUE)
+		{
 			return STATUS_NOT_FOUND;
 		}
 
 		return STATUS_SUCCESS;
+	}
+
+	void release_implicit_locks(PHANDLE_TABLE handle_table, PHANDLE_TABLE_ENTRY handle_table_entry) noexcept
+	{
+		#if !defined(_WIN7_)
+		if (handle_table_entry) 
+		{ 
+			_InterlockedExchangeAdd8(reinterpret_cast<char*>(&handle_table_entry->VolatileLowValue), 1);
+		}
+
+		if (handle_table && handle_table->HandleContentionEvent)
+		{
+			ExfUnblockPushLock(&handle_table->HandleContentionEvent, nullptr);
+		}
+
+		#endif
 	}
 
 	NTSTATUS close_handle(PEPROCESS process, HANDLE handle) noexcept {

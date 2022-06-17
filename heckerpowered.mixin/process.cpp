@@ -348,6 +348,7 @@ namespace process
 
 		return STATUS_SUCCESS;
 	}
+
 	NTSTATUS set_protect_flag_by_id(HANDLE process_id, protect_flag protection, protect_flag dynamic_code, protect_flag signature) noexcept
 	{
 		PEPROCESS process;

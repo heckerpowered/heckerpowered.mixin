@@ -7,7 +7,7 @@ namespace mixin
 
 	bool is_being_unloaded()
 	{
-		return unloading;
+		return unloading.load();
 	}
 }
 
@@ -18,7 +18,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	mixin::driver_object = driver_object;
 
 	status = compatibility::initialize_dynamic_data();
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		io::println("Failed to initialize dynamic data.");
 		return status;
@@ -27,8 +27,8 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	io::println("Dynamic data initialized successfully.");
 
 	status = hook::infinity_hook::initialize();
-	if (!NT_SUCCESS(status)) 
-	{ 
+	if (!NT_SUCCESS(status))
+	{
 		io::println("Failed to initialize infinity hook.");
 		return status;
 	}
@@ -66,8 +66,8 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// If a driver's call to IoCreateDevice returns an error, the driver should release any resources that it allocated for
 	// that device.
 	status = IoCreateDevice(driver_object, 0, &device_name, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, false, &device);
-	if (!NT_SUCCESS(status)) 
-	{ 
+	if (!NT_SUCCESS(status))
+	{
 		io::println("Failed to create device.");
 		return status;
 	}
@@ -76,13 +76,17 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 
 	driver_object->DriverUnload = [](auto driver_object)
 	{
+		io::println("Unload occured.");
 		mixin::unloading = true;
+		io::println("Waiting for threads to exit.");
 		concurrent::thread::join_all();
-
+		io::println("Stopping infinity hook.");
 		k_hook::stop();
+		io::println("Unregistering callbacks.");
 		callback::unregister_callbacks();
 		callback::process::unregister_callbacks();
 		callback::image::unregister_callbacks();
+		io::println("Deleting symbolic links.");
 		IoDeleteSymbolicLink(&symbolic_link_name);
 
 		// When handling a PnP IRP_MN_REMOVE_DEVICE request, a PnP driver calls IoDeleteDevice to delete any
@@ -103,7 +107,20 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 		// references to it. However, if any outstanding references remain, the I/O manager marks the device object as
 		// "delete pending" and deletes the device object when the references are released.
 		auto device = driver_object->DeviceObject;
-		if (device) IoDeleteDevice(device);
+		if (device) 
+		{
+			io::println("Deleting device.");
+			IoDeleteDevice(device);
+		}
+		else
+		{
+			io::println("Device not found, failed to delete device.");
+		}
+
+		if (virtualization::guest_state)
+		{
+			memory::free(virtualization::guest_state);
+		}
 	};
 
 	// The _Dispatch_type_ annotations does not seem to be detected on Lambda expressions
@@ -265,7 +282,7 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 		io::println("Device deleted.");
 		return status;
 	}
-	
+
 	io::println("Symbolic link created successfully.");
 
 	// Bypass the special certificate check otherwise the registration object callback will fail
@@ -275,23 +292,23 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 
 	io::println("Special certificate verification bypassed.");
 	status = callback::initialize_callbacks();
-	if (!NT_SUCCESS(status)) 
-	{ 
+	if (!NT_SUCCESS(status))
+	{
 		io::println("Failed to initialized object callbacks.");
 		return status;
 	}
 
 	io::println("Object callbacks initialized successfully.");
 	status = callback::process::register_callbacks();
-	if (!NT_SUCCESS(status)) 
-	{ 
+	if (!NT_SUCCESS(status))
+	{
 		io::println("Failed to initialized process callbacks.");
 		return status;
 	}
 
 	io::println("Process callbacks initialized successfully.");
 	status = com::initialize_requests();
-	if (!NT_SUCCESS(status)) 
+	if (!NT_SUCCESS(status))
 	{
 		io::println("Failed to initialized requestes.");
 		return status;
@@ -350,6 +367,22 @@ extern "C" NTSTATUS DriverEntry(struct _DRIVER_OBJECT* driver_object, PUNICODE_S
 	// DriverEntry, because this is done automatically by the I/O Manager. However, your driver should clear this flag on
 	// all other device objects that it creates.
 	device->Flags &= ~DO_DEVICE_INITIALIZING;
-	
+
+	if (virtualization::check_hypervisor_support())
+	{
+		io::println("Hypervisor initialization status: ", virtualization::initialize_hypervisor());
+
+		auto hook_page{ memory::allocate<virtualization::EPT_HOOKED_PAGE_DETAIL>() };
+		hook_page->ChangedEntry.ExecuteAccess = true;
+		hook_page->ChangedEntry.ReadAccess = false;
+		hook_page->ChangedEntry.WriteAccess = false;
+
+		virtualization::ept_state->HookedPagesList->emplace(MmGetPhysicalAddress(memory::allocate(1024)).QuadPart, hook_page);
+	}
+	else
+	{
+		io::println("Hypervisor not support.");
+	}
+
 	return status;
 }

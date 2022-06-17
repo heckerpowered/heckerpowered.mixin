@@ -106,6 +106,27 @@
     <Filter Include="files\util\native\handle">
       <UniqueIdentifier>{b38b7d7d-643a-45e7-9425-6e08f239db5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="files\util\memory\legacy">
+      <UniqueIdentifier>{10c992d6-9c05-4eaa-add3-517d13df6602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\util\memory\mapper">
+      <UniqueIdentifier>{399b10a0-9ddc-4159-8c16-a6274ef671ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\virtualization">
+      <UniqueIdentifier>{29924ea8-b6d0-4e30-a8ba-bf8fc33eedab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\virtualization\architecture">
+      <UniqueIdentifier>{0cc1eed5-be23-447a-84b3-303f97d41f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\virtualization\ept">
+      <UniqueIdentifier>{934b2abe-841a-46a9-8440-9066093f41a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\virtualization\hypervisor">
+      <UniqueIdentifier>{b0bbfd50-d437-494d-9afd-3f3b996a4b8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files\feature\hook\hyper_hook">
+      <UniqueIdentifier>{1c0eb6b6-bdc7-42cb-a900-516fa4f89894}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="communication.cpp">
@@ -188,6 +209,18 @@
     </ClCompile>
     <ClCompile Include="crc32.cpp">
       <Filter>files\util\core\secure\crc32</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_legacy.cpp">
+      <Filter>files\util\memory\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_mapper.cpp">
+      <Filter>files\util\memory\mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="virtualization.cpp">
+      <Filter>files\feature\virtualization</Filter>
+    </ClCompile>
+    <ClCompile Include="hyper_hook.cpp">
+      <Filter>files\feature\hook\hyper_hook</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -320,5 +353,31 @@
     <ClInclude Include="pch.hpp">
       <Filter>files</Filter>
     </ClInclude>
+    <ClInclude Include="memory_legacy.hpp">
+      <Filter>files\util\memory\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_mapper.hpp">
+      <Filter>files\util\memory\mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="virtualization.hpp">
+      <Filter>files\feature\virtualization</Filter>
+    </ClInclude>
+    <ClInclude Include="ept.hpp">
+      <Filter>files\feature\virtualization\ept</Filter>
+    </ClInclude>
+    <ClInclude Include="ia32.hpp">
+      <Filter>files\feature\virtualization\architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="hypervisor.hpp">
+      <Filter>files\feature\virtualization\hypervisor</Filter>
+    </ClInclude>
+    <ClInclude Include="hyper_hook.hpp">
+      <Filter>files\feature\hook\hyper_hook</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="hypervisor.asm">
+      <Filter>files\feature\virtualization\hypervisor</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ namespace hook::infinity_hook {
 
 	NTSTATUS initialize() {
 		hooked_functions = new std::unordered_map<void*, void*>();
-		return k_hook::initialize(callback) && k_hook::start() ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
+		return k_hook::initialize(callback) && k_hook::start() ? STATUS_SUCCESS : STATUS_NOT_SUPPORTED;
 	}
 
 	void hook_export(const wchar_t* function_name, void* address) noexcept {

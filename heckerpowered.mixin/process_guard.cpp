@@ -57,7 +57,7 @@ namespace guard
 		hook::infinity_hook::hook_export(L"NtOpenProcess", static_cast<NTSTATUS(*)(PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, PCLIENT_ID)>(
 			[](_Out_ PHANDLE ProcessHandle, _In_ ACCESS_MASK DesiredAccess, _In_ POBJECT_ATTRIBUTES ObjectAttributes, _In_opt_ PCLIENT_ID ClientId)
 		{
-			if (ClientId && guarded(ClientId->UniqueProcess)) return STATUS_ACCESS_DENIED;
+			if (ClientId && ClientId != PsGetCurrentProcessId() && guarded(ClientId->UniqueProcess)) return STATUS_ACCESS_DENIED;
 
 			return NtOpenProcess(ProcessHandle, DesiredAccess, ObjectAttributes, ClientId);
 		}));
@@ -163,7 +163,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (require(process_id, guard_level::strict)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -174,7 +174,7 @@ namespace guard
 		hook::infinity_hook::hook_ssdt("NtDebugContinue", static_cast<NTSTATUS(*)(HANDLE, PCLIENT_ID, NTSTATUS)>([](HANDLE DebugHandle, PCLIENT_ID AppClientId,
 			NTSTATUS ContinueStatus)
 		{
-			if (require(AppClientId->UniqueProcess, guard_level::highest)) return STATUS_ACCESS_DENIED;
+			if (require(AppClientId->UniqueProcess, guard_level::strict)) return STATUS_ACCESS_DENIED;
 
 			static auto NtDebugContinue{ static_cast<NTSTATUS(*)(HANDLE, PCLIENT_ID, NTSTATUS)>(ext::get_ssdt_entry(ssdt::get_ssdt_index("NtDebugContinue"))) };
 			return NtDebugContinue(DebugHandle, AppClientId, ContinueStatus);
@@ -193,7 +193,10 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if(process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest))
+					{
+						return STATUS_ACCESS_DENIED;
+					}
 				}
 			}
 
@@ -210,7 +213,11 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::basic)) return STATUS_ACCESS_DENIED;
+					auto process_id{ PsGetProcessId(IoThreadToProcess(thread)) };
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::basic)) 
+					{
+						return STATUS_ACCESS_DENIED; 
+					}
 				}
 			}
 
@@ -227,7 +234,8 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) return STATUS_ACCESS_DENIED;
+					auto process_id{ PsGetProcessId(IoThreadToProcess(thread)) };
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -247,7 +255,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -268,7 +276,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -286,7 +294,11 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) return STATUS_ACCESS_DENIED;
+					auto process_id = PsGetProcessId(IoThreadToProcess(thread));
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest))
+					{
+						return STATUS_ACCESS_DENIED;
+					}
 				}
 			}
 
@@ -302,7 +314,11 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) return STATUS_ACCESS_DENIED;
+					auto process_id = PsGetProcessId(IoThreadToProcess(thread));
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest))
+					{
+						return STATUS_ACCESS_DENIED;
+					}
 				}
 			}
 
@@ -321,7 +337,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -341,7 +357,10 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) 
+					{
+						return STATUS_ACCESS_DENIED;
+					}
 				}
 			}
 
@@ -359,7 +378,8 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) { return STATUS_ACCESS_DENIED; }
+					auto process_id{ PsGetProcessId(IoThreadToProcess(thread)) };
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -377,7 +397,8 @@ namespace guard
 				if (NT_SUCCESS(ObReferenceObjectByHandle(ThreadHandle, THREAD_ALL_ACCESS, *PsThreadType, MODE::KernelMode, reinterpret_cast<void**>(&thread)
 					, nullptr)))
 				{
-					if (require(PsGetProcessId(IoThreadToProcess(thread)), guard_level::highest)) { return STATUS_ACCESS_DENIED; }
+					auto process_id{ PsGetProcessId(IoThreadToProcess(thread)) };
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -397,7 +418,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -417,7 +438,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -437,7 +458,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -457,7 +478,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -477,7 +498,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) { return STATUS_ACCESS_DENIED; }
 				}
 			}
 
@@ -497,7 +518,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -517,7 +538,7 @@ namespace guard
 				{
 					auto process_id = PsGetProcessId(process);
 					ObDereferenceObject(process);
-					if (require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
+					if (process_id != PsGetCurrentProcessId() && require(process_id, guard_level::highest)) return STATUS_ACCESS_DENIED;
 				}
 			}
 
@@ -530,6 +551,14 @@ namespace guard
 
 		// Inline hook disabled.
 		#ifdef INLINE_HOOK
+
+		hook::hyper::hook(NtOpenProcess, static_cast<decltype(&NtOpenProcess)>([](PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess,
+			POBJECT_ATTRIBUTES ObjectAttributes, PCLIENT_ID ClientId)
+		{
+			ProcessHandle; DesiredAccess; ObjectAttributes; ClientId;
+
+			return STATUS_ACCESS_DENIED;
+		}));
 
 		inline_hook::infinity_hook::hook(NtOpenProcess, static_cast<decltype(&NtOpenProcess)>([](PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess,
 			POBJECT_ATTRIBUTES ObjectAttributes, PCLIENT_ID ClientId)

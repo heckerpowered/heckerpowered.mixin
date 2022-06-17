@@ -24,6 +24,7 @@ namespace concurrent
 			auto& tuple{ *function };
 			std::invoke(std::move(std::get<indices>(tuple))...);
 			if (handle) { launched_threads->erase(handle); }
+			ZwClose(handle);
 			PsTerminateSystemThread(STATUS_SUCCESS);
 		}
 
@@ -63,7 +64,6 @@ namespace concurrent
 		void detach()
 		{
 			if (!joinable()) { return; }
-			ZwClose(_native_handle);
 		}
 
 		thread(thread&& _Other) noexcept : _native_handle(std::exchange(_Other._native_handle, {})) {}

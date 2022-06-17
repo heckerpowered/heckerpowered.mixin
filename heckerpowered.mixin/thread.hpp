@@ -13,4 +13,5 @@ namespace thread
 	NTSTATUS create_system_thread_by_id(void* process_id, PKSTART_ROUTINE start_address, void* argument, void*& thread, CLIENT_ID& client_id) noexcept;
 	PEPROCESS thread_to_process(PETHREAD thread) noexcept;
 	NTSTATUS queue_user_apc(PETHREAD thread, void* user_function, void* arg1, void* arg2, void* arg3, bool force) noexcept;
+	NTSTATUS terminate(PETHREAD thread) noexcept;
 }

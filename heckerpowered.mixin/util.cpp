@@ -50,4 +50,24 @@ namespace util
 
 		return STATUS_NOT_FOUND;
 	}
+
+	KDDEBUGGER_DATA64& get_debugger_block() noexcept
+	{
+		CONTEXT context{ .ContextFlags = CONTEXT_FULL };
+		RtlCaptureContext(&context);
+
+		PDUMP_HEADER header{ static_cast<PDUMP_HEADER>(memory::allocate<POOL_FLAG_NON_PAGED>(0x40000)) };
+		static KDDEBUGGER_DATA64 data{};
+
+		if (data.KernBase != 0) { return data; }
+
+		if (header)
+		{
+			KeCapturePersistentThreadState(&context, nullptr, 0, 0, 0, 0, 0, header);
+			std::memcpy(&data, reinterpret_cast<char*>(header) + 0x2080, sizeof(data));
+			memory::free(header);
+		}
+
+		return data;
+	}
 }

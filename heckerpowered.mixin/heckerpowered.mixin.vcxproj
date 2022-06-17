@@ -153,18 +153,30 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
     <ClCompile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -177,7 +189,7 @@
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
     <ClCompile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -223,21 +235,45 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
@@ -251,6 +287,7 @@
     <ClCompile Include="handle.cpp" />
     <ClCompile Include="hde64.cpp" />
     <ClCompile Include="hook.cpp" />
+    <ClCompile Include="hyper_hook.cpp" />
     <ClCompile Include="image_callback.cpp" />
     <ClCompile Include="infinity_hook.cpp" />
     <ClCompile Include="inline_hook.cpp" />
@@ -258,6 +295,8 @@
     <ClCompile Include="lde.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
+    <ClCompile Include="memory_legacy.cpp" />
+    <ClCompile Include="memory_mapper.cpp" />
     <ClCompile Include="object_callback.cpp" />
     <ClCompile Include="procedure.cpp" />
     <ClCompile Include="process.cpp" />
@@ -270,6 +309,7 @@
     <ClCompile Include="thread.cpp" />
     <ClCompile Include="thread_callback.cpp" />
     <ClCompile Include="util.cpp" />
+    <ClCompile Include="virtualization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="communication.hpp" />
@@ -277,11 +317,15 @@
     <ClInclude Include="concurrent.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="crc32.hpp" />
+    <ClInclude Include="ept.hpp" />
     <ClInclude Include="extern.hpp" />
     <ClInclude Include="handle.hpp" />
     <ClInclude Include="hde64.h" />
     <ClInclude Include="headers.hpp" />
     <ClInclude Include="hook.hpp" />
+    <ClInclude Include="hypervisor.hpp" />
+    <ClInclude Include="hyper_hook.hpp" />
+    <ClInclude Include="ia32.hpp" />
     <ClInclude Include="image_callback.hpp" />
     <ClInclude Include="imports.hpp" />
     <ClInclude Include="infinity_hook.hpp" />
@@ -291,6 +335,8 @@
     <ClInclude Include="lde.hpp" />
     <ClInclude Include="main.hpp" />
     <ClInclude Include="memory.hpp" />
+    <ClInclude Include="memory_legacy.hpp" />
+    <ClInclude Include="memory_mapper.hpp" />
     <ClInclude Include="native_enum.hpp" />
     <ClInclude Include="native_struct.hpp" />
     <ClInclude Include="native_struct10.hpp" />
@@ -315,6 +361,13 @@
     <ClInclude Include="thread_callback.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="utils.hpp" />
+    <ClInclude Include="virtualization.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="hypervisor.asm">
+      <FileType>MASM</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
