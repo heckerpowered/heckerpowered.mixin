@@ -2,7 +2,7 @@
 
 namespace util
 {
-	MODE set_previous_mode(MODE mode) noexcept
+	MODE const set_previous_mode(MODE mode) noexcept
 	{
 		static unsigned int previous_mode_offset = 0;
 		if (previous_mode_offset == 0)
@@ -27,7 +27,7 @@ namespace util
 		return original_mode;
 	}
 
-	NTSTATUS pattern_scan(const unsigned char* pattern, unsigned char wildcard, std::size_t length, const void* base, std::size_t size, void*& found) noexcept
+	NTSTATUS const pattern_scan(const unsigned char* pattern, unsigned char wildcard, std::size_t length, const void* base, std::size_t size, void*& found) noexcept
 	{
 		for (unsigned __int64 i{}; i < size - length; i++)
 		{
@@ -51,7 +51,7 @@ namespace util
 		return STATUS_NOT_FOUND;
 	}
 
-	KDDEBUGGER_DATA64& get_debugger_block() noexcept
+	KDDEBUGGER_DATA64 const& get_debugger_block() noexcept
 	{
 		CONTEXT context{ .ContextFlags = CONTEXT_FULL };
 		RtlCaptureContext(&context);

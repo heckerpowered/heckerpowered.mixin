@@ -52,6 +52,8 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -60,6 +62,9 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -68,6 +73,8 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -80,6 +87,7 @@
     <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
     <VCToolsVersion>
     </VCToolsVersion>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -88,6 +96,8 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -96,6 +106,9 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -104,6 +117,8 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -112,6 +127,9 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <CharacterSet>MultiByte</CharacterSet>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -122,32 +140,60 @@
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(IncludePath);$(KMDF_INC_PATH)$(KMDF_VER_PATH);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IncludePath>$(VC_IncludePath);$(IncludePath)</IncludePath>
-    <EnableInf2cat>false</EnableInf2cat>
+    <IncludePath>$(IncludePath);$(KMDF_INC_PATH)$(KMDF_VER_PATH);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(VC_IncludePath);$(IncludePath);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <EnableInf2cat>false</EnableInf2cat>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(IncludePath);$(KMDF_INC_PATH)$(KMDF_VER_PATH);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(IncludePath);$(KMDF_INC_PATH)$(KMDF_VER_PATH);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(IncludePath);$(KMDF_INC_PATH)$(KMDF_VER_PATH);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <IncludePath>$(IncludePath);$(KMDF_INC_PATH)$(KMDF_VER_PATH);$(SolutionDir)libraries;$(VC_IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <DriverSign>
@@ -158,6 +204,21 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -169,7 +230,25 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <CallingConvention>FastCall</CallingConvention>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <Link>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DriverSign>
@@ -182,6 +261,21 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <PreprocessorDefinitions>_WIN10_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -203,8 +297,8 @@
       <EnableModules>true</EnableModules>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
-      <DebugInformationFormat>None</DebugInformationFormat>
-      <SDLCheck>true</SDLCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -214,15 +308,20 @@
       <PreprocessorDefinitions>_WIN10_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
-      <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <ShowIncludes>false</ShowIncludes>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <ExpandAttributedSource>false</ExpandAttributedSource>
       <TranslateIncludes>false</TranslateIncludes>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -240,6 +339,21 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <CallingConvention>FastCall</CallingConvention>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -251,6 +365,21 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -262,6 +391,21 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <CallingConvention>FastCall</CallingConvention>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
@@ -273,101 +417,39 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <SDLCheck>false</SDLCheck>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <GuardEHContMetadata>true</GuardEHContMetadata>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <UndefinePreprocessorDefinitions>_HAS_EXCEPTIONS;_HAS_STATIC_RTTI;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <DisableSpecificWarnings>4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="communication.cpp" />
-    <ClCompile Include="compatibility.cpp" />
-    <ClCompile Include="core.cpp" />
-    <ClCompile Include="crc32.cpp" />
-    <ClCompile Include="extern.cpp" />
-    <ClCompile Include="handle.cpp" />
-    <ClCompile Include="hde64.cpp" />
-    <ClCompile Include="hook.cpp" />
-    <ClCompile Include="hyper_hook.cpp" />
-    <ClCompile Include="image_callback.cpp" />
-    <ClCompile Include="infinity_hook.cpp" />
-    <ClCompile Include="inline_hook.cpp" />
-    <ClCompile Include="io.cpp" />
-    <ClCompile Include="lde.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="memory.cpp" />
-    <ClCompile Include="memory_legacy.cpp" />
-    <ClCompile Include="memory_mapper.cpp" />
-    <ClCompile Include="object_callback.cpp" />
-    <ClCompile Include="procedure.cpp" />
-    <ClCompile Include="process.cpp" />
-    <ClCompile Include="process_callback.cpp" />
-    <ClCompile Include="process_guard.cpp" />
-    <ClCompile Include="ssdt.cpp" />
-    <ClCompile Include="string_builder.cpp" />
-    <ClCompile Include="string_literap.cpp" />
-    <ClCompile Include="system.cpp" />
-    <ClCompile Include="thread.cpp" />
-    <ClCompile Include="thread_callback.cpp" />
-    <ClCompile Include="util.cpp" />
-    <ClCompile Include="virtualization.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="communication.hpp" />
-    <ClInclude Include="compatibility.hpp" />
-    <ClInclude Include="concurrent.hpp" />
-    <ClInclude Include="core.hpp" />
-    <ClInclude Include="crc32.hpp" />
-    <ClInclude Include="ept.hpp" />
-    <ClInclude Include="extern.hpp" />
-    <ClInclude Include="handle.hpp" />
-    <ClInclude Include="hde64.h" />
-    <ClInclude Include="headers.hpp" />
-    <ClInclude Include="hook.hpp" />
-    <ClInclude Include="hypervisor.hpp" />
-    <ClInclude Include="hyper_hook.hpp" />
-    <ClInclude Include="ia32.hpp" />
-    <ClInclude Include="image_callback.hpp" />
-    <ClInclude Include="imports.hpp" />
-    <ClInclude Include="infinity_hook.hpp" />
-    <ClInclude Include="inline_hook.hpp" />
-    <ClInclude Include="io.hpp" />
-    <ClInclude Include="kernel_stl.hpp" />
-    <ClInclude Include="lde.hpp" />
+    <ClInclude Include="..\libraries\device.hpp" />
     <ClInclude Include="main.hpp" />
-    <ClInclude Include="memory.hpp" />
-    <ClInclude Include="memory_legacy.hpp" />
-    <ClInclude Include="memory_mapper.hpp" />
-    <ClInclude Include="native_enum.hpp" />
-    <ClInclude Include="native_struct.hpp" />
-    <ClInclude Include="native_struct10.hpp" />
-    <ClInclude Include="native_struct7.hpp" />
-    <ClInclude Include="native_struct81.hpp" />
-    <ClInclude Include="native_sturct8.hpp" />
-    <ClInclude Include="nmd_assembly.hpp" />
-    <ClInclude Include="object_callback.hpp" />
-    <ClInclude Include="pch.hpp" />
-    <ClInclude Include="pestructs.hpp" />
-    <ClInclude Include="procedure.hpp" />
-    <ClInclude Include="process.hpp" />
-    <ClInclude Include="process_callback.hpp" />
-    <ClInclude Include="process_guard.hpp" />
-    <ClInclude Include="pstdint.h" />
-    <ClInclude Include="ssdt.hpp" />
-    <ClInclude Include="string_builder.hpp" />
-    <ClInclude Include="string_literal.hpp" />
-    <ClInclude Include="system.hpp" />
-    <ClInclude Include="table64.h" />
-    <ClInclude Include="thread.hpp" />
-    <ClInclude Include="thread_callback.hpp" />
-    <ClInclude Include="util.hpp" />
-    <ClInclude Include="utils.hpp" />
-    <ClInclude Include="virtualization.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="hypervisor.asm">
-      <FileType>MASM</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </MASM>
+    <ClCompile Include="..\libraries\device.cpp" />
+    <ClCompile Include="..\libraries\standard.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libraries\standard.hpp">
+      <FileType>CppHeader</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

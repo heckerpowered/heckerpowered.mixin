@@ -116,7 +116,7 @@ namespace com
 						return memory::read_process_memory(request->process_id, request->base_address, request->is_physical, request->user_buffer, request->size,
 							*request.response<std::size_t>());
 					case requests::memory_operation::write:
-						return STATUS_NOT_IMPLEMENTED	;
+						return STATUS_NOT_IMPLEMENTED;
 					default:
 						return STATUS_NOT_SUPPORTED;
 				}
